@@ -2,21 +2,26 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
-import { Connection } from 'typeorm';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UsersController } from './controllers/users/users.controller';
-import { BusinessController } from './controllers/business/business.controller';
-import { AppointmentsController } from './controllers/appointments/appointments.controller';
-import { UsersService } from './services/users/users.service';
-import { AppointmentsService } from './services/appointments/appointments.service';
-import { BusinessService } from './services/business/business.service';
+import { UsersModule } from './users/users.module';
+import { AppointmentsModule } from './appointments/appointments.module';
+import { BusinessModule } from './business/business.module';
+import { StaffsModule } from './staffs/staffs.module';
+import { BusinnessHoursModule } from './businness-hours/businness-hours.module';
+import { BusinessServicesModule } from './business-services/business-services.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ envFilePath: './env/.development.env' }),
     TypeOrmModule.forRoot(),
+    UsersModule,
+    AppointmentsModule,
+    BusinessModule,
+    StaffsModule,
+    BusinnessHoursModule,
+    BusinessServicesModule,
   ],
-  controllers: [AppController, UsersController, BusinessController, AppointmentsController],
-  providers: [AppService, UsersService, AppointmentsService, BusinessService],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}
