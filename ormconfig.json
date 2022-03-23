@@ -5,7 +5,7 @@
   "username": "root",
   "password": "password",
   "database": "openapp",
-  "entities":  ["dist/**/entities/*.js"],
+  "entities":  ["dist/**/entities/*.js","./src/**/*.entity.js" ],
   "synchronize": true,
   "keepConnectionAlive": true
 }

@@ -16,7 +16,7 @@ export class Appointment {
 
   @OneToOne(() => Business)
   @JoinColumn()
-  business: Business;
+  bId: Business;
 
   @OneToOne(() => Users)
   @JoinColumn()
