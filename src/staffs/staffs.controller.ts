@@ -17,7 +17,9 @@ export class StaffsController {
 
   @Post()
   create(@Body() createStaffDto: CreateStaffDto) {
-    return this.staffsService.create(createStaffDto);
+    return this.staffsService.create(createStaffDto).then(() => {
+      return true;
+    });
   }
 
   @Get()

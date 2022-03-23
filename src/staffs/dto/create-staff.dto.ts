@@ -1,1 +1,7 @@
-export class CreateStaffDto {}
+export class CreateStaffDto {
+  bId: number;
+
+  firstName: string;
+
+  emailId: string;
+}

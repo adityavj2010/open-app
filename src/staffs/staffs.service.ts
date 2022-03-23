@@ -1,11 +1,36 @@
-import { Injectable } from '@nestjs/common';
+import {
+  HttpCode,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { CreateStaffDto } from './dto/create-staff.dto';
 import { UpdateStaffDto } from './dto/update-staff.dto';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Business } from '../business/entities/business.entity';
+import { Staff } from './entities/staff.entity';
+import { ERRORS } from '../misc/errors';
 
 @Injectable()
 export class StaffsService {
-  create(createStaffDto: CreateStaffDto) {
-    return 'This action adds a new staff';
+  constructor(
+    @InjectRepository(Staff)
+    private staffRepository: Repository<Staff>,
+  ) {}
+
+  async create(staff: CreateStaffDto) {
+    const staffs = await this.staffRepository.find({
+      bId: staff.bId,
+      emailId: staff.emailId,
+    });
+    if (staffs.length > 0) {
+      throw new HttpException(
+        ERRORS.STAFF_ALREADY_CREATED,
+        HttpStatus.CONFLICT,
+      );
+    }
+    return this.staffRepository.save(staff);
   }
 
   findAll() {
