@@ -17,7 +17,7 @@ export class User {
   @Column({ default: '' })
   lastName: string;
 
-  @Column()
+  @Column({ unique: true })
   phoneNumber: string;
 
   @Column({ default: false })

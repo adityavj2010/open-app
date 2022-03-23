@@ -18,8 +18,8 @@ export class UsersService {
     return this.usersRepository.save(createUserDto);
   }
 
-  findAll() {
-    return this.usersRepository.find();
+  findAll(query = null) {
+    return this.usersRepository.find(query);
   }
 
   findOne(id) {

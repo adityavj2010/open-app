@@ -11,11 +11,10 @@ export class Business {
   @PrimaryGeneratedColumn()
   bId: number;
 
-  @OneToOne(() => User)
-  @JoinColumn()
-  bOwner: User;
-
   @Column({ nullable: false })
+  uId: number;
+
+  @Column({ nullable: false, unique: true })
   bName: string;
 
   @Column({ nullable: false })
