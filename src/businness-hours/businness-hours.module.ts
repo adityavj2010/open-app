@@ -4,6 +4,6 @@ import { BusinnessHoursController } from './businness-hours.controller';
 
 @Module({
   controllers: [BusinnessHoursController],
-  providers: [BusinnessHoursService]
+  providers: [BusinnessHoursService],
 })
 export class BusinnessHoursModule {}
