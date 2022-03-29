@@ -10,7 +10,9 @@ import {
 import { BusinessServicesService } from './business-services.service';
 import { CreateBusinessServiceDto } from './dto/create-business-service.dto';
 import { UpdateBusinessServiceDto } from './dto/update-business-service.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Business Services')
 @Controller('business-services')
 export class BusinessServicesController {
   constructor(

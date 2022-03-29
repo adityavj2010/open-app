@@ -10,7 +10,9 @@ import {
 import { BusinnessHoursService } from './businness-hours.service';
 import { CreateBusinnessHourDto } from './dto/create-businness-hour.dto';
 import { UpdateBusinnessHourDto } from './dto/update-businness-hour.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Business Hours')
 @Controller('businness-hours')
 export class BusinnessHoursController {
   constructor(private readonly businnessHoursService: BusinnessHoursService) {}

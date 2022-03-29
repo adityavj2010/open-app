@@ -3,4 +3,6 @@ export enum ERRORS {
   USER_NOT_FOUND = 'User has not been registered',
   BNAME_ALREADY_TAKEN = 'Business name is already taken',
   STAFF_ALREADY_CREATED = 'Staff already created',
+  DUPLICATE_ENTRY = 'Duplicate entry',
+  INVALID_CREDENTIALS = 'Invalid emailId or password',
 }

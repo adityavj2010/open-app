@@ -14,13 +14,11 @@ export class Appointment {
   @PrimaryGeneratedColumn()
   appId: number;
 
-  @OneToOne(() => Business)
-  @JoinColumn()
-  bId: Business;
+  @Column({ nullable: false })
+  bId: number;
 
-  @OneToOne(() => Users)
-  @JoinColumn()
-  user: Users;
+  @Column({ nullable: false })
+  uId: number;
 
   @Column({ nullable: false })
   startDateTime: Date;

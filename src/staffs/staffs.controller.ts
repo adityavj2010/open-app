@@ -10,16 +10,16 @@ import {
 import { StaffsService } from './staffs.service';
 import { CreateStaffDto } from './dto/create-staff.dto';
 import { UpdateStaffDto } from './dto/update-staff.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Staffs')
 @Controller('staffs')
 export class StaffsController {
   constructor(private readonly staffsService: StaffsService) {}
 
   @Post()
   create(@Body() createStaffDto: CreateStaffDto) {
-    return this.staffsService.create(createStaffDto).then(() => {
-      return true;
-    });
+    return this.staffsService.create(createStaffDto);
   }
 
   @Get()

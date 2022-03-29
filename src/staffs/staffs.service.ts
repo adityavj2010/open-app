@@ -30,7 +30,9 @@ export class StaffsService {
         HttpStatus.CONFLICT,
       );
     }
-    return this.staffRepository.save(staff);
+    return this.staffRepository.save(staff).then((item) => {
+      return item.id;
+    });
   }
 
   findAll() {

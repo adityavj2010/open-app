@@ -15,6 +15,7 @@ import { Staff } from './staffs/entities/staff.entity';
 import { BusinnessHour } from './businness-hours/entities/businness-hour.entity';
 import { BusinessService } from './business-services/entities/business-service.entity';
 import { Appointment } from './appointments/entities/appointment.entity';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [

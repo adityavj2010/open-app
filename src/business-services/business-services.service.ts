@@ -1,15 +1,28 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateBusinessServiceDto } from './dto/create-business-service.dto';
 import { UpdateBusinessServiceDto } from './dto/update-business-service.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { BusinessService } from './entities/business-service.entity';
+import { ERRORS } from '../misc/errors';
 
 @Injectable()
 export class BusinessServicesService {
-  create(createBusinessServiceDto: CreateBusinessServiceDto) {
-    return 'This action adds a new businessService';
+  constructor(
+    @InjectRepository(BusinessService)
+    private businnessServiceRepository: Repository<BusinessService>,
+  ) {}
+
+  async create(createBusinessServiceDto: CreateBusinessServiceDto) {
+    const entries = await this.findAll({ bId: createBusinessServiceDto.bId });
+    if (entries.length > 0) {
+      throw new HttpException(ERRORS.DUPLICATE_ENTRY, HttpStatus.CONFLICT);
+    }
+    return this.businnessServiceRepository.save(createBusinessServiceDto);
   }
 
-  findAll() {
-    return `This action returns all businessServices`;
+  findAll(query = null) {
+    return this.businnessServiceRepository.find(query);
   }
 
   findOne(id: number) {

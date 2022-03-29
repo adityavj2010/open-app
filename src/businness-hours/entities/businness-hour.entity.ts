@@ -4,19 +4,20 @@ import {
   JoinColumn,
   OneToOne,
   PrimaryGeneratedColumn,
+  Unique,
 } from 'typeorm';
 
 import { Min, Max } from 'class-validator';
 import { Business } from '../../business/entities/business.entity';
 
 @Entity()
+@Unique(['bId', 'day', 'startTime', 'endTime'])
 export class BusinnessHour {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(() => Business)
-  @JoinColumn()
-  business: Business;
+  @Column({ nullable: false })
+  bId: number;
 
   @Column({ nullable: false })
   @Min(0)

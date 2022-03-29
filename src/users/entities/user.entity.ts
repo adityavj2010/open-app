@@ -8,7 +8,7 @@ export class User {
   @Column({ unique: true })
   emailId: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, select: false })
   password: string;
 
   @Column()
@@ -17,9 +17,12 @@ export class User {
   @Column({ default: '' })
   lastName: string;
 
-  @Column({ unique: true })
+  @Column({ unique: true, select: false })
   phoneNumber: string;
 
-  @Column({ default: false })
+  @Column({ default: false, select: false })
   isVerified: boolean;
+
+  @Column({ nullable: true, select: false })
+  tempPassword: string;
 }
