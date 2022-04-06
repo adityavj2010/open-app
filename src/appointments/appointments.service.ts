@@ -9,10 +9,10 @@ import { Repository } from 'typeorm';
 export class AppointmentsService {
   constructor(
     @InjectRepository(Appointment)
-    private businnessHoursRepository: Repository<Appointment>,
+    private appointmentRepository: Repository<Appointment>,
   ) {}
   create(createAppointmentDto: CreateAppointmentDto) {
-    return 'This action adds a new appointment';
+    return this.appointmentRepository.save(createAppointmentDto);
   }
 
   findAll() {

@@ -8,5 +8,6 @@ import { BusinnessHour } from './entities/businness-hour.entity';
   imports: [TypeOrmModule.forFeature([BusinnessHour])],
   controllers: [BusinnessHoursController],
   providers: [BusinnessHoursService],
+  exports: [BusinnessHoursService],
 })
 export class BusinnessHoursModule {}

@@ -9,11 +9,15 @@ export class CreateBusinessDto {
   @ApiProperty()
   bName: string;
 
+  @ApiProperty()
   bCity: string;
 
+  @ApiProperty()
   bZip: string;
 
+  @ApiProperty()
   bState: string;
 
+  @ApiProperty()
   bType: string;
 }

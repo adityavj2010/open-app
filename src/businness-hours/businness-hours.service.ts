@@ -19,6 +19,7 @@ export class BusinnessHoursService {
     if (entries.length > 0) {
       throw new HttpException(ERRORS.DUPLICATE_ENTRY, HttpStatus.CONFLICT);
     }
+
     return this.businnessHoursRepository.save(createBusinnessHourDto);
   }
 

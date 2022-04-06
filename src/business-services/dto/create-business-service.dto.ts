@@ -1,22 +1,20 @@
 import { Column } from 'typeorm';
 import { Max, Min } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateBusinessServiceDto {
+  @ApiProperty()
   bId: number;
 
-  @Column({ nullable: false })
+  @ApiProperty()
   serviceName: string;
 
-  @Column({ nullable: false })
-  @Min(1)
-  @Max(60)
+  @ApiProperty()
   time: number;
 
-  @Column({ nullable: false })
-  @Min(0)
+  @ApiProperty()
   cost: number;
 
-  @Column({ nullable: false })
-  @Min(0)
+  @ApiProperty()
   count: number;
 }

@@ -16,6 +16,7 @@ import { BusinnessHour } from './businness-hours/entities/businness-hour.entity'
 import { BusinessService } from './business-services/entities/business-service.entity';
 import { Appointment } from './appointments/entities/appointment.entity';
 import { JwtService } from '@nestjs/jwt';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { JwtService } from '@nestjs/jwt';
     StaffsModule,
     BusinnessHoursModule,
     BusinessServicesModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [AppService],
