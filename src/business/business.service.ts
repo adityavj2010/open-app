@@ -19,7 +19,6 @@ export class BusinessService {
     const users = await this.userService.findAll({
       id: business.uId,
     });
-    console.log('USER ID', business.uId);
     if (users.length == 0) {
       throw new HttpException(ERRORS.USER_NOT_FOUND, HttpStatus.BAD_REQUEST);
     }

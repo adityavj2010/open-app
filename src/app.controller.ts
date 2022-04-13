@@ -19,17 +19,29 @@ import { BusinessService } from './business/business.service';
 import { BusinnessHoursService } from './businness-hours/businness-hours.service';
 import { StaffsService } from './staffs/staffs.service';
 import { BusinessServicesService } from './business-services/business-services.service';
+import { BusinessServicesController } from './business-services/business-services.controller';
+import { BusinessController } from './business/business.controller';
+import { BusinnessHoursController } from './businness-hours/businness-hours.controller';
+import { StaffsController } from './staffs/staffs.controller';
+import { UsersController } from './users/users.controller';
+import { Logger } from 'winston';
+import { JwtService } from '@nestjs/jwt';
+
+class Response {
+  token: string;
+}
 
 @ApiTags('Core')
 @Controller()
 export class AppController {
   constructor(
-    private readonly userService: UsersService,
+    private readonly userService: UsersController,
     private mail: MailService,
-    private readonly businessService: BusinessService,
-    private readonly businessSerciceService: BusinessServicesService,
-    private readonly bussinessHours: BusinnessHoursService,
-    private readonly staffs: StaffsService,
+    private readonly businessService: BusinessController,
+    private readonly businessSerciceService: BusinessServicesController,
+    private readonly bussinessHours: BusinnessHoursController,
+    private readonly staffs: StaffsController,
+    private jwtService: JwtService,
   ) {}
 
   @Post('bussiness-sign-up')
@@ -37,20 +49,18 @@ export class AppController {
   @ApiResponse({
     status: 201,
     description: 'Return userId of created user',
-    type: Number,
+    type: Response,
   })
   async businessSignUp(@Body() body: RegisterBussiness) {
-    console.log({ body });
     body.user.password = Math.random().toString(36).slice(-8);
 
-    const user = await this.userService.create(body.user);
-    body.business.uId = user.id;
+    const user = await this.userService.signUp(body.user);
+    body.business.uId = user;
     const business = await this.businessService.create(body.business);
     for (let i = 0; i < body.businessHours.length; i++) {
       body.businessHours[i].bId = business;
       await this.bussinessHours.create(body.businessHours[i]);
     }
-
     for (let i = 0; i < body.businessServices.length; i++) {
       body.businessServices[i].bId = business;
       await this.businessSerciceService.create(body.businessServices[i]);
@@ -59,8 +69,8 @@ export class AppController {
       body.staff[i].bId = business;
       await this.staffs.create(body.staff[i]);
     }
-
-    return Promise.resolve(1);
+    await this.mail.sendUserPassword(body.user.emailId, body.user.password);
+    return { token: this.jwtService.sign({ userId: user }) };
   }
 
   @Post('sign-up')
@@ -94,10 +104,5 @@ export class AppController {
   })
   requestTempPassword(@Param('userId') userId: number): Promise<string> {
     return this.userService.requestTempPassword(userId);
-  }
-
-  @Get()
-  test() {
-    return this.mail.sendUserConfirmation();
   }
 }

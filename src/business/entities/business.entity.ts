@@ -11,7 +11,7 @@ export class Business {
   @PrimaryGeneratedColumn()
   bId: number;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, unique: true })
   uId: number;
 
   @Column({ nullable: false, unique: true })

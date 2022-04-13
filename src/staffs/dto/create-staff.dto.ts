@@ -2,7 +2,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateStaffDto {
   @ApiPropertyOptional()
-  bId: number;
+  bId?: number;
 
   @ApiPropertyOptional()
   firstName: string;

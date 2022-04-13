@@ -1,8 +1,8 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateBusinnessHourDto {
-  @ApiProperty()
-  bId: number;
+  @ApiPropertyOptional()
+  bId?: number;
 
   @ApiProperty()
   day: number;

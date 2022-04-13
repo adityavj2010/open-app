@@ -14,10 +14,6 @@ export class BusinessServicesService {
   ) {}
 
   async create(createBusinessServiceDto: CreateBusinessServiceDto) {
-    const entries = await this.findAll({ bId: createBusinessServiceDto.bId });
-    if (entries.length > 0) {
-      throw new HttpException(ERRORS.DUPLICATE_ENTRY, HttpStatus.CONFLICT);
-    }
     return this.businnessServiceRepository.save(createBusinessServiceDto);
   }
 

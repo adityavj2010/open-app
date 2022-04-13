@@ -24,6 +24,7 @@ export class BusinnessHour {
   @Max(6)
   day: number;
 
+  //TODO change to date time
   @Column({ nullable: false })
   @Min(0)
   @Max(24)

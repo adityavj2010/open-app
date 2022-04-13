@@ -5,4 +5,5 @@ export enum ERRORS {
   STAFF_ALREADY_CREATED = 'Staff already created',
   DUPLICATE_ENTRY = 'Duplicate entry',
   INVALID_CREDENTIALS = 'Invalid emailId or password',
+  EMAIL_SENDING_FAILURE = 'Failed to send mail',
 }

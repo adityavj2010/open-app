@@ -11,7 +11,7 @@ export class userDto {
   @IsNotEmpty()
   @ApiPropertyOptional({ description: 'Password of the user', type: 'string' })
   @Length(6, 20)
-  password: string;
+  password?: string;
 
   @ApiProperty({ description: 'First name of the user', type: 'string' })
   @IsNotEmpty()

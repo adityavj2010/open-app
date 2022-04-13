@@ -9,7 +9,10 @@ async function bootstrap() {
   const options = {
     logger: logger,
   };
-  const app = await NestFactory.create<NestFastifyApplication>(AppModule, {});
+  const app = await NestFactory.create<NestFastifyApplication>(
+    AppModule,
+    options,
+  );
   app.enableCors();
   app.setGlobalPrefix('api', { exclude: ['swagger'] });
   const config = new DocumentBuilder().setTitle('Open App Backend').build();

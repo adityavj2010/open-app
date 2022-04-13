@@ -30,8 +30,4 @@ export class BusinessService {
   @Column({ nullable: false })
   @Min(0)
   cost: number;
-
-  @Column({ nullable: false })
-  @Min(0)
-  count: number;
 }

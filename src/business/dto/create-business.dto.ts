@@ -4,7 +4,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateBusinessDto {
   @ApiPropertyOptional()
-  uId: number;
+  uId?: number;
 
   @ApiProperty()
   bName: string;

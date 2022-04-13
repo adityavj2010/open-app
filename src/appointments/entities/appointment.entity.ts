@@ -23,9 +23,6 @@ export class Appointment {
   @Column({ nullable: false })
   startDateTime: Date;
 
-  @Column({ default: false })
-  repeat: boolean;
-
   @Column({ default: '' })
   notes: string;
 }
