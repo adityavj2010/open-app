@@ -50,7 +50,6 @@ export class UsersService {
 
   async requestTempPassword(userId: number) {
     const user = await this.findOne(userId);
-    console.log({ user });
     if (user == null) {
       throw new HttpException(ERRORS.USER_NOT_FOUND, HttpStatus.BAD_REQUEST);
     }
