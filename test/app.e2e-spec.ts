@@ -10,6 +10,7 @@ import { clearDB } from './database';
 import { UsersModule } from '../src/users/users.module';
 import { RegisterBussiness } from '../src/users/dto/create-user.dto';
 import { ERRORS } from '../src/misc/errors';
+import { response } from 'express';
 
 const registerBussiness: RegisterBussiness = {
   user: {
@@ -87,7 +88,8 @@ describe('Sign up', () => {
       .post('/bussiness-sign-up')
       .send(registerBussiness);
     expect(result.statusCode).toEqual(201);
-    expect(Number(result.text)).toBeGreaterThanOrEqual(1);
+    const body = result.body;
+    expect(body.token).not.toBeNull();
   });
 
   it('/bussiness-sign-up duplicate signup', async () => {
@@ -95,6 +97,6 @@ describe('Sign up', () => {
       .post('/bussiness-sign-up')
       .send(registerBussiness);
     expect(result.statusCode).toEqual(HttpStatus.CONFLICT);
-    expect(result.text).toEqual(ERRORS.EMAIL_TAKEN);
+    expect(result.body.message).toEqual(ERRORS.EMAIL_TAKEN);
   });
 });

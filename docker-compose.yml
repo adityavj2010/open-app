@@ -1,35 +1,27 @@
-version: '2'
+version: '3'
 services:
   db:
-    container_name: db
+    platform: linux/x86_64
     image: mysql
-    command: --default-authentication-plugin=mysql_native_password
-    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: "password"
+      MYSQL_DATABASE: "openapp"
+    container_name: db
+    ports:
+      - "3306:3306"
     healthcheck:
-      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
       timeout: 20s
       retries: 10
-    environment:
-      MYSQL_ROOT_PASSWORD: password
-    ports:
-      - "3306"
-
 
   server:
     container_name: openapi-backend
     image: openapi:1.0.0
-    build:
-        context: .
-        dockerfile: ./Dockerfile
-    command: npm run start:prod
+    build: .
+    command: npm run start
     ports:
-        - 3000:3000
-    networks:
-        - nesjs-network
-    volumes:
-        - .:/usr/src/app
-        - /usr/src/app/node_modules
+        - "5000:3000"
     restart: unless-stopped
     depends_on:
-       db:
-          condition: service_healthy
+        - db
+#docker run --name openapp_db -e MYSQL_ROOT_PASSWORD="password" -e MYSQL_DATABASE="openapp"  -p 3306:3306 --platform linux/x86_64 mysql

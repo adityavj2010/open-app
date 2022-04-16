@@ -1,4 +1,13 @@
-import { Get, Controller, Post, Req, Body, Query, Param } from '@nestjs/common';
+import {
+  Get,
+  Controller,
+  Post,
+  Req,
+  Body,
+  Query,
+  Param,
+  Logger,
+} from '@nestjs/common';
 import { AppService } from './app.service';
 import { Request } from 'express';
 import {
@@ -15,16 +24,12 @@ import {
   SignInDto,
 } from './users/dto/create-user.dto';
 import { MailService } from './mail/mail.service';
-import { BusinessService } from './business/business.service';
-import { BusinnessHoursService } from './businness-hours/businness-hours.service';
-import { StaffsService } from './staffs/staffs.service';
-import { BusinessServicesService } from './business-services/business-services.service';
 import { BusinessServicesController } from './business-services/business-services.controller';
 import { BusinessController } from './business/business.controller';
 import { BusinnessHoursController } from './businness-hours/businness-hours.controller';
 import { StaffsController } from './staffs/staffs.controller';
 import { UsersController } from './users/users.controller';
-import { Logger } from 'winston';
+
 import { JwtService } from '@nestjs/jwt';
 
 class Response {
@@ -43,7 +48,7 @@ export class AppController {
     private readonly staffs: StaffsController,
     private jwtService: JwtService,
   ) {}
-
+  private readonly logger = new Logger(AppController.name);
   @Post('bussiness-sign-up')
   @ApiOperation({ summary: 'Registers a business user' })
   @ApiResponse({
@@ -55,8 +60,15 @@ export class AppController {
     body.user.password = Math.random().toString(36).slice(-8);
 
     const user = await this.userService.signUp(body.user);
+    this.logger.log(
+      `Create user with ${body.user.emailId} with user id ${user} `,
+    );
     body.business.uId = user;
     const business = await this.businessService.create(body.business);
+    this.logger.log(
+      `Create business with ${body.business.bName} with business id ${business} `,
+    );
+
     for (let i = 0; i < body.businessHours.length; i++) {
       body.businessHours[i].bId = business;
       await this.bussinessHours.create(body.businessHours[i]);

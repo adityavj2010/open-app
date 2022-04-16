@@ -15,7 +15,7 @@ import { Staff } from './staffs/entities/staff.entity';
 import { BusinnessHour } from './businness-hours/entities/businness-hour.entity';
 import { BusinessService } from './business-services/entities/business-service.entity';
 import { Appointment } from './appointments/entities/appointment.entity';
-import { JwtService } from '@nestjs/jwt';
+import { JwtModule, JwtService } from '@nestjs/jwt';
 import { MailModule } from './mail/mail.module';
 
 @Module({
@@ -23,7 +23,7 @@ import { MailModule } from './mail/mail.module';
     ConfigModule.forRoot({ envFilePath: './env/.development.env' }),
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
+      host: 'db',
       port: 3306,
       username: 'root',
       password: 'password',
@@ -39,6 +39,11 @@ import { MailModule } from './mail/mail.module';
       synchronize: true,
       keepConnectionAlive: true,
     }),
+    JwtModule.register({
+      secret: 'secret',
+      signOptions: { expiresIn: '36000s' },
+    }),
+
     UsersModule,
     AppointmentsModule,
     BusinessModule,

@@ -4,7 +4,7 @@ const mysql = require('mysql2');
 const db = require('../ormconfig.json');
 // create the connection to database
 const connection = mysql.createConnection({
-  host: 'localhost',
+  host: 'db',
   user: 'root',
   password: 'password',
   database: 'openapp',

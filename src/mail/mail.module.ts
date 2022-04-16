@@ -14,8 +14,8 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
         host: 'smtp.ethereal.email',
         port: 587,
         auth: {
-          user: 'zoila.bailey67@ethereal.email',
-          pass: 'w8356pKBDTANZZhQHE',
+          user: 'lilyan.kub11@ethereal.email',
+          pass: 'fqSAZ1tqSuHHsWQazK',
         },
       },
       template: {
