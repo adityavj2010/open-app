@@ -3,5 +3,5 @@ RUN apk add --no-cache python3 g++ make
 WORKDIR /app
 COPY . .
 RUN npm install
-# RUN npm run build
+#RUN npm start
 EXPOSE 8000 4000 3001
