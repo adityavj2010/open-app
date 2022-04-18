@@ -1,0 +1,3 @@
+[submodule "open-app"]
+	path = frontend
+	url = https://github.com/npm-harman/open-app.git

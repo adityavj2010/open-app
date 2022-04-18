@@ -57,8 +57,8 @@ export class AppController {
     type: Response,
   })
   async businessSignUp(@Body() body: RegisterBussiness) {
-    body.user.password = Math.random().toString(36).slice(-8);
-
+    // body.user.password = Math.random().toString(36).slice(-8);
+    body.user.password = 'password';
     const user = await this.userService.signUp(body.user);
     this.logger.log(
       `Create user with ${body.user.emailId} with user id ${user} `,

@@ -17,13 +17,18 @@ import { BusinessService } from './business-services/entities/business-service.e
 import { Appointment } from './appointments/entities/appointment.entity';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { MailModule } from './mail/mail.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ envFilePath: './env/.development.env' }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'frontend', 'dist', 'open-app'),
+    }),
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'db',
+      host: 'localhost',
       port: 3306,
       username: 'root',
       password: 'password',

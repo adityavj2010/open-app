@@ -4,6 +4,7 @@ import { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { logger } from './misc/logger';
 import { ValidationPipe } from '@nestjs/common';
+import { FastifyStaticOptions } from '@nestjs/platform-fastify/interfaces/external';
 
 async function bootstrap() {
   const options = {
@@ -14,6 +15,7 @@ async function bootstrap() {
     options,
   );
   app.enableCors();
+
   app.setGlobalPrefix('api', { exclude: ['swagger'] });
   const config = new DocumentBuilder().setTitle('Open App Backend').build();
   const document = SwaggerModule.createDocument(app, config);
@@ -23,7 +25,6 @@ async function bootstrap() {
       transform: true,
     }),
   );
-
   await app.listen(3000, '0.0.0.0');
 }
 bootstrap().catch((e) => {
