@@ -1,4 +1,11 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  forwardRef,
+  HttpCode,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { CreateUserDto, SignInDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -6,13 +13,15 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ERRORS } from '../misc/errors';
 import { JwtService } from '@nestjs/jwt';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
-    private jwtService: JwtService,
+    @Inject(forwardRef(() => AuthService))
+    private auth: AuthService,
   ) {}
 
   create(createUserDto: CreateUserDto) {
@@ -21,6 +30,17 @@ export class UsersService {
 
   findAll(query = null) {
     return this.usersRepository.find(query);
+  }
+
+  async findOneByEmail(email): Promise<User> {
+    const users = await this.usersRepository.find({ emailId: email });
+    if (users.length != 0) {
+      throw new HttpException(
+        'Duplicate entries found',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+    return users[0];
   }
 
   findOne(id) {
@@ -85,9 +105,7 @@ export class UsersService {
       );
     }
     const user = users[0];
-    return this.jwtService.sign({
-      id: user.id,
-      tempPassword,
-    });
+
+    return await this.auth.login(user);
   }
 }

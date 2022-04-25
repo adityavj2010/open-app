@@ -31,6 +31,8 @@ import { StaffsController } from './staffs/staffs.controller';
 import { UsersController } from './users/users.controller';
 
 import { JwtService } from '@nestjs/jwt';
+import { AuthService } from './auth/auth.service';
+import { UsersModule } from './users/users.module';
 
 class Response {
   token: string;
@@ -46,7 +48,8 @@ export class AppController {
     private readonly businessSerciceService: BusinessServicesController,
     private readonly bussinessHours: BusinnessHoursController,
     private readonly staffs: StaffsController,
-    private jwtService: JwtService,
+    private readonly auth: AuthService,
+    private readonly user: UsersService,
   ) {}
   private readonly logger = new Logger(AppController.name);
   @Post('bussiness-sign-up')
@@ -82,7 +85,8 @@ export class AppController {
       await this.staffs.create(body.staff[i]);
     }
     await this.mail.sendUserPassword(body.user.emailId, body.user.password);
-    return { token: this.jwtService.sign({ userId: user }) };
+
+    return this.auth.login(await this.user.findOne(user));
   }
 
   @Post('sign-up')
@@ -103,7 +107,7 @@ export class AppController {
     description: 'Return jwt token',
     type: Number,
   })
-  signIn(@Body() body: SignInDto): Promise<string> {
+  signIn(@Body() body: SignInDto): Promise<{ token: string }> {
     return this.userService.signIn(body);
   }
 

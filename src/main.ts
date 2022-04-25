@@ -5,10 +5,11 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { logger } from './misc/logger';
 import { ValidationPipe } from '@nestjs/common';
 import { FastifyStaticOptions } from '@nestjs/platform-fastify/interfaces/external';
+import { JwtService } from '@nestjs/jwt';
 
 async function bootstrap() {
   const options = {
-    logger: logger,
+    // logger: logger,
   };
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,

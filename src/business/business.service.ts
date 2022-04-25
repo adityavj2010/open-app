@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { CreateBusinessDto } from './dto/create-business.dto';
 import { UpdateBusinessDto } from './dto/update-business.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -6,6 +11,7 @@ import { Repository } from 'typeorm';
 import { Business } from './entities/business.entity';
 import { UsersService } from '../users/users.service';
 import { ERRORS } from '../misc/errors';
+import { StaffsService } from '../staffs/staffs.service';
 
 @Injectable()
 export class BusinessService {
@@ -13,6 +19,7 @@ export class BusinessService {
     @InjectRepository(Business)
     private businessRepository: Repository<Business>,
     private readonly userService: UsersService,
+    private readonly staffService: StaffsService,
   ) {}
 
   async create(business: CreateBusinessDto) {
@@ -33,16 +40,30 @@ export class BusinessService {
     });
   }
 
-  findAll() {
-    return `This action returns all business`;
+  async checkBusinessUserAssociation(bId, uId) {
+    const business = await this.findOne(bId);
+    if (business.uId !== uId) {
+      throw new UnauthorizedException();
+    }
+  }
+
+  async checkStaffBusinessAssociatino(id, bId) {
+    const staff = await this.staffService.findOne(id);
+    if (staff.bId !== bId) {
+      throw new HttpException(ERRORS.UNAUTHORIZED, HttpStatus.UNAUTHORIZED);
+    }
+  }
+
+  findAll(queryParams) {
+    return this.businessRepository.find(queryParams);
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} business`;
+    return this.businessRepository.findOne(id);
   }
 
   update(id: number, updateBusinessDto: UpdateBusinessDto) {
-    return `This action updates a #${id} business`;
+    return this.businessRepository.update(id, updateBusinessDto);
   }
 
   remove(id: number) {

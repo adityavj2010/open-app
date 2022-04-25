@@ -44,4 +44,9 @@ export class AppointmentsController {
   remove(@Param('id') id: string) {
     return this.appointmentsService.remove(+id);
   }
+
+  @Post('book')
+  bookAppointment(@Body() createAppointmentDto) {
+    return '';
+  }
 }

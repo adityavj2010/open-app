@@ -8,8 +8,8 @@ export class CreateBusinnessHourDto {
   day: number;
 
   @ApiProperty()
-  startTime: number;
+  startTime: string;
 
   @ApiProperty()
-  endTime: number;
+  endTime: string;
 }

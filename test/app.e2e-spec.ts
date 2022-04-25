@@ -46,18 +46,18 @@ const registerBussiness: RegisterBussiness = {
   ],
   businessHours: [
     {
-      startTime: 10,
-      endTime: 17,
+      startTime: '10:00:00',
+      endTime: '15:00:00',
       day: 1,
     },
     {
-      startTime: 10,
-      endTime: 17,
+      startTime: '10:00:00',
+      endTime: '15:00:00',
       day: 2,
     },
     {
-      startTime: 10,
-      endTime: 17,
+      startTime: '10:00:00',
+      endTime: '15:00:00',
       day: 3,
     },
   ],
@@ -65,7 +65,8 @@ const registerBussiness: RegisterBussiness = {
 
 describe('Sign up', () => {
   let app: NestFastifyApplication;
-
+  let token;
+  let bId;
   beforeAll(async () => {
     jest.setTimeout(60000);
     await clearDB();
@@ -87,9 +88,11 @@ describe('Sign up', () => {
     const result = await request(app.getHttpServer())
       .post('/bussiness-sign-up')
       .send(registerBussiness);
+    console.log('/bussiness-sign-up (POST)', result.statusCode, result.text);
     expect(result.statusCode).toEqual(201);
     const body = result.body;
     expect(body.token).not.toBeNull();
+    token = body.token;
   });
 
   it('/bussiness-sign-up duplicate signup', async () => {
@@ -98,5 +101,60 @@ describe('Sign up', () => {
       .send(registerBussiness);
     expect(result.statusCode).toEqual(HttpStatus.CONFLICT);
     expect(result.body.message).toEqual(ERRORS.EMAIL_TAKEN);
+  });
+
+  it('Sign in check', async () => {
+    const signInBody = {
+      emailId: 'adityavj2010@gmail.com',
+      password: 'password',
+    };
+    const result = await request(app.getHttpServer())
+      .post('/sign-in')
+      .send(signInBody);
+    expect(result.statusCode).toEqual(201);
+    expect(result.body.token).not.toBeNull();
+    token = result.body.token;
+  });
+
+  it('Check business details', async () => {
+    const signInBody = {
+      emailId: 'adityavj2010@gmail.com',
+      password: 'password',
+    };
+
+    const result = await request(app.getHttpServer())
+      .get('/business/get-owned-business')
+      .set('Authorization', 'Bearer ' + token)
+      .send();
+    expect(result.statusCode).toEqual(200);
+    expect(result.body.bName).toEqual(registerBussiness.business.bName);
+    expect(result.body.bType).toEqual(registerBussiness.business.bType);
+    expect(result.body.bState).toEqual(registerBussiness.business.bState);
+    expect(result.body.bZip).toEqual(registerBussiness.business.bZip);
+    expect(result.body.bCity).toEqual(registerBussiness.business.bCity);
+    expect(result.body.bId).not.toBeUndefined();
+
+    bId = result.body.bId;
+    console.log({ bId });
+  });
+
+  it('Update business details', async () => {
+    const newBusiness = registerBussiness.business;
+    newBusiness.bName = 'New name';
+    let result = await request(app.getHttpServer())
+      .patch(`/business/${bId}`)
+      .set('Authorization', 'Bearer ' + token)
+      .send(newBusiness);
+    expect(result.statusCode).toEqual(200);
+    result = await request(app.getHttpServer())
+      .get('/business/get-owned-business')
+      .set('Authorization', 'Bearer ' + token)
+      .send();
+    expect(result.statusCode).toEqual(200);
+    expect(result.body.bName).toEqual(newBusiness.bName);
+    expect(result.body.bType).toEqual(registerBussiness.business.bType);
+    expect(result.body.bState).toEqual(registerBussiness.business.bState);
+    expect(result.body.bZip).toEqual(registerBussiness.business.bZip);
+    expect(result.body.bCity).toEqual(registerBussiness.business.bCity);
   });
 });

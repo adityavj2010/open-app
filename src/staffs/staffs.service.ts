@@ -35,19 +35,28 @@ export class StaffsService {
     });
   }
 
-  findAll() {
-    return `This action returns all staffs`;
+  findAll(searchParams) {
+    return this.staffRepository.find(searchParams);
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} staff`;
+    return this.staffRepository.findOne(id);
   }
 
-  update(id: number, updateStaffDto: UpdateStaffDto) {
-    return `This action updates a #${id} staff`;
+  async update(id: number, updateStaffDto: UpdateStaffDto) {
+    const staff = await this.findOne(id);
+    if (!staff) {
+      throw new HttpException('Invalid staff id', HttpStatus.BAD_REQUEST);
+    }
+    return this.update(id, updateStaffDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} staff`;
+  async remove(id: number) {
+    const staff = await this.findOne(id);
+    if (!staff) {
+      throw new HttpException('Invalid staff id', HttpStatus.BAD_REQUEST);
+    }
+
+    return this.remove(id);
   }
 }

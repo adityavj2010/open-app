@@ -6,11 +6,14 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
 import { StaffsService } from './staffs.service';
 import { CreateStaffDto } from './dto/create-staff.dto';
 import { UpdateStaffDto } from './dto/update-staff.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('Staffs')
 @Controller('staffs')
@@ -22,10 +25,12 @@ export class StaffsController {
     return this.staffsService.create(createStaffDto);
   }
 
-  @Get()
-  findAll() {
-    return this.staffsService.findAll();
-  }
+  // @UseGuards(JwtAuthGuard)
+  // @Get()
+  // findAll(@Req() request: Request) {
+  //   const ctx = GetContext(request);
+  //   return this.staffsService.findAll();
+  // }
 
   @Get(':id')
   findOne(@Param('id') id: string) {

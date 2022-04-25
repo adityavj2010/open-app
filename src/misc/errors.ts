@@ -6,4 +6,5 @@ export enum ERRORS {
   DUPLICATE_ENTRY = 'Duplicate entry',
   INVALID_CREDENTIALS = 'Invalid emailId or password',
   EMAIL_SENDING_FAILURE = 'Failed to send mail',
+  UNAUTHORIZED = 'Invalid Access',
 }

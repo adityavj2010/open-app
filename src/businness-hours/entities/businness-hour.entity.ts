@@ -25,13 +25,9 @@ export class BusinnessHour {
   day: number;
 
   //TODO change to date time
-  @Column({ nullable: false })
-  @Min(0)
-  @Max(24)
-  startTime: number;
+  @Column({ type: 'time', nullable: false })
+  startTime: string;
 
-  @Column({ nullable: false })
-  @Min(0)
-  @Max(24)
-  endTime: number;
+  @Column({ type: 'time', nullable: false })
+  endTime: string;
 }

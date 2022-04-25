@@ -1,4 +1,9 @@
-import { Module } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
@@ -15,10 +20,11 @@ import { Staff } from './staffs/entities/staff.entity';
 import { BusinnessHour } from './businness-hours/entities/businness-hour.entity';
 import { BusinessService } from './business-services/entities/business-service.entity';
 import { Appointment } from './appointments/entities/appointment.entity';
-import { JwtModule, JwtService } from '@nestjs/jwt';
 import { MailModule } from './mail/mail.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { AuthModule } from './auth/auth.module';
+import { ContextMiddleware } from '../middleware/context.middleware';
 
 @Module({
   imports: [
@@ -28,7 +34,7 @@ import { join } from 'path';
     }),
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'db',
+      host: 'localhost',
       port: 3306,
       username: 'root',
       password: 'password',
@@ -44,11 +50,7 @@ import { join } from 'path';
       synchronize: true,
       keepConnectionAlive: true,
     }),
-    JwtModule.register({
-      secret: 'secret',
-      signOptions: { expiresIn: '36000s' },
-    }),
-
+    AuthModule,
     UsersModule,
     AppointmentsModule,
     BusinessModule,
@@ -56,8 +58,15 @@ import { join } from 'path';
     BusinnessHoursModule,
     BusinessServicesModule,
     MailModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(ContextMiddleware)
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
+  }
+}

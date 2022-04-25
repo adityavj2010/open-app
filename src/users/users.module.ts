@@ -1,9 +1,11 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { JwtModule, JwtService } from '@nestjs/jwt';
+import { JwtModule } from '@nestjs/jwt';
+import { AuthModule } from '../auth/auth.module';
+import { BusinessModule } from '../business/business.module';
 
 @Module({
   imports: [
@@ -12,6 +14,7 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
       secret: 'secret',
       signOptions: { expiresIn: '36000s' },
     }),
+    forwardRef(() => AuthModule),
   ],
   controllers: [UsersController],
   providers: [UsersService, UsersController],
