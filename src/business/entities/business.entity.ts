@@ -28,4 +28,7 @@ export class Business {
 
   @Column()
   bType: string;
+
+  @Column({ default: '' })
+  description: string;
 }

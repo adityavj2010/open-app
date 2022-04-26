@@ -22,4 +22,7 @@ export class Staff {
 
   @Column({ nullable: false })
   emailId: string;
+
+  @Column({ nullable: true, default: '' })
+  description: string;
 }

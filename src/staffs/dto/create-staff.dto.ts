@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Column } from 'typeorm';
 
 export class CreateStaffDto {
   @ApiPropertyOptional()
@@ -9,4 +10,7 @@ export class CreateStaffDto {
 
   @ApiProperty()
   emailId: string;
+
+  @ApiPropertyOptional()
+  description?: string;
 }

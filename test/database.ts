@@ -1,7 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const mysql = require('mysql2');
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const db = require('../ormconfig.json');
+
 // create the connection to database
 const connection = mysql.createConnection({
   host: 'localhost',
@@ -13,8 +12,8 @@ const connection = mysql.createConnection({
 export async function clearDB() {
   return new Promise((resolve, reject) => {
     try {
-      connection.query(`DROP DATABASE ${db.database}`, () => {
-        connection.query(`CREATE DATABASE ${db.database}`, () => {
+      connection.query(`DROP DATABASE openapp`, () => {
+        connection.query(`CREATE DATABASE openapp`, () => {
           return resolve(true);
         });
       });

@@ -20,4 +20,7 @@ export class CreateBusinessDto {
 
   @ApiProperty()
   bType: string;
+
+  @ApiPropertyOptional()
+  description?: string;
 }
