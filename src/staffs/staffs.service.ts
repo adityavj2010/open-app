@@ -45,10 +45,12 @@ export class StaffsService {
 
   async update(id: number, updateStaffDto: UpdateStaffDto) {
     const staff = await this.findOne(id);
+
     if (!staff) {
       throw new HttpException('Invalid staff id', HttpStatus.BAD_REQUEST);
     }
-    return this.update(id, updateStaffDto);
+
+    return this.staffRepository.update(id, updateStaffDto);
   }
 
   async remove(id: number) {

@@ -63,6 +63,10 @@ const registerBussiness: RegisterBussiness = {
   ],
 };
 
+const signInBody = {
+  emailId: 'adityavj2010@gmail.com',
+  password: 'password',
+};
 describe('Sign up', () => {
   let app: NestFastifyApplication;
   let token;
@@ -84,18 +88,17 @@ describe('Sign up', () => {
     await app.getHttpAdapter().getInstance().ready();
   });
 
-  it('/bussiness-sign-up (POST)', async () => {
+  it('Business Sign-up', async () => {
     const result = await request(app.getHttpServer())
       .post('/bussiness-sign-up')
       .send(registerBussiness);
-    console.log('/bussiness-sign-up (POST)', result.statusCode, result.text);
     expect(result.statusCode).toEqual(201);
     const body = result.body;
     expect(body.token).not.toBeNull();
     token = body.token;
   });
 
-  it('/bussiness-sign-up duplicate signup', async () => {
+  it('Test re registration', async () => {
     const result = await request(app.getHttpServer())
       .post('/bussiness-sign-up')
       .send(registerBussiness);
@@ -104,10 +107,32 @@ describe('Sign up', () => {
   });
 
   it('Sign in check', async () => {
-    const signInBody = {
-      emailId: 'adityavj2010@gmail.com',
-      password: 'password',
-    };
+    const result = await request(app.getHttpServer())
+      .post('/sign-in')
+      .send(signInBody);
+    expect(result.statusCode).toEqual(201);
+    expect(result.body.token).not.toBeNull();
+    token = result.body.token;
+  });
+});
+
+describe('Business Details', () => {
+  let app: NestFastifyApplication;
+  let token;
+  let bId;
+  beforeAll(async () => {
+    const moduleFixture: TestingModule = await Test.createTestingModule({
+      imports: [AppModule],
+    }).compile();
+
+    app = moduleFixture.createNestApplication<NestFastifyApplication>(
+      new FastifyAdapter(),
+    );
+    await app.init();
+    await app.getHttpAdapter().getInstance().ready();
+  });
+
+  beforeEach(async () => {
     const result = await request(app.getHttpServer())
       .post('/sign-in')
       .send(signInBody);
@@ -117,11 +142,6 @@ describe('Sign up', () => {
   });
 
   it('Check business details', async () => {
-    const signInBody = {
-      emailId: 'adityavj2010@gmail.com',
-      password: 'password',
-    };
-
     const result = await request(app.getHttpServer())
       .get('/business/get-owned-business')
       .set('Authorization', 'Bearer ' + token)
@@ -135,7 +155,6 @@ describe('Sign up', () => {
     expect(result.body.bId).not.toBeUndefined();
 
     bId = result.body.bId;
-    console.log({ bId });
   });
 
   it('Update business details', async () => {
@@ -156,5 +175,232 @@ describe('Sign up', () => {
     expect(result.body.bState).toEqual(registerBussiness.business.bState);
     expect(result.body.bZip).toEqual(registerBussiness.business.bZip);
     expect(result.body.bCity).toEqual(registerBussiness.business.bCity);
+  });
+});
+
+describe('Business Details', () => {
+  let app: NestFastifyApplication;
+  let token;
+  let bId;
+  beforeAll(async () => {
+    const moduleFixture: TestingModule = await Test.createTestingModule({
+      imports: [AppModule],
+    }).compile();
+
+    app = moduleFixture.createNestApplication<NestFastifyApplication>(
+      new FastifyAdapter(),
+    );
+    await app.init();
+    await app.getHttpAdapter().getInstance().ready();
+  });
+
+  beforeEach(async () => {
+    const result = await request(app.getHttpServer())
+      .post('/sign-in')
+      .send(signInBody);
+    expect(result.statusCode).toEqual(201);
+    expect(result.body.token).not.toBeNull();
+    token = result.body.token;
+  });
+
+  it('Check business details', async () => {
+    const result = await request(app.getHttpServer())
+      .get('/business/get-owned-business')
+      .set('Authorization', 'Bearer ' + token)
+      .send();
+    expect(result.statusCode).toEqual(200);
+    expect(result.body.bName).toEqual(registerBussiness.business.bName);
+    expect(result.body.bType).toEqual(registerBussiness.business.bType);
+    expect(result.body.bState).toEqual(registerBussiness.business.bState);
+    expect(result.body.bZip).toEqual(registerBussiness.business.bZip);
+    expect(result.body.bCity).toEqual(registerBussiness.business.bCity);
+    expect(result.body.bId).not.toBeUndefined();
+
+    bId = result.body.bId;
+  });
+
+  it('Update business details', async () => {
+    const newBusiness = registerBussiness.business;
+    newBusiness.bName = 'New name';
+    let result = await request(app.getHttpServer())
+      .patch(`/business/${bId}`)
+      .set('Authorization', 'Bearer ' + token)
+      .send(newBusiness);
+    expect(result.statusCode).toEqual(200);
+    result = await request(app.getHttpServer())
+      .get('/business/get-owned-business')
+      .set('Authorization', 'Bearer ' + token)
+      .send();
+    expect(result.statusCode).toEqual(200);
+    expect(result.body.bName).toEqual(newBusiness.bName);
+    expect(result.body.bType).toEqual(registerBussiness.business.bType);
+    expect(result.body.bState).toEqual(registerBussiness.business.bState);
+    expect(result.body.bZip).toEqual(registerBussiness.business.bZip);
+    expect(result.body.bCity).toEqual(registerBussiness.business.bCity);
+  });
+});
+
+describe('Staff Testcases', () => {
+  let app: NestFastifyApplication;
+  let token;
+  let bId;
+  let newStaffId;
+  beforeAll(async () => {
+    const moduleFixture: TestingModule = await Test.createTestingModule({
+      imports: [AppModule],
+    }).compile();
+
+    app = moduleFixture.createNestApplication<NestFastifyApplication>(
+      new FastifyAdapter(),
+    );
+    await app.init();
+    await app.getHttpAdapter().getInstance().ready();
+  });
+
+  beforeEach(async () => {
+    let result = await request(app.getHttpServer())
+      .post('/sign-in')
+      .send(signInBody);
+    expect(result.statusCode).toEqual(201);
+    expect(result.body.token).not.toBeNull();
+    token = result.body.token;
+    result = await request(app.getHttpServer())
+      .get('/business/get-owned-business')
+      .set('Authorization', 'Bearer ' + token)
+      .send();
+    bId = result.body.bId;
+  });
+
+  it('Get staff list', async () => {
+    const result = await request(app.getHttpServer())
+      .get(`/business/${bId}/staff`)
+      .set('Authorization', 'Bearer ' + token)
+      .send();
+    expect(result.statusCode).toEqual(200);
+
+    expect(result.body.length).toEqual(1);
+    expect(result.body[0].emailId).toEqual(registerBussiness.staff[0].emailId);
+    expect(result.body[0].firstName).toEqual(
+      registerBussiness.staff[0].firstName,
+    );
+  });
+
+  it('Add staff list', async () => {
+    const newStaffMember = {
+      firstName: 'doosra chamcha',
+      emailId: 'doosra@gmail.com',
+    };
+    let result = await request(app.getHttpServer())
+      .post(`/business/${bId}/staff`)
+      .set('Authorization', 'Bearer ' + token)
+      .send(newStaffMember);
+    expect(result.statusCode).toEqual(201);
+
+    newStaffId = result.body;
+
+    result = await request(app.getHttpServer())
+      .get(`/business/${bId}/staff`)
+      .set('Authorization', 'Bearer ' + token)
+      .send();
+    expect(result.statusCode).toEqual(200);
+    expect(result.body.length).toEqual(2);
+
+    result = await request(app.getHttpServer())
+      .get(`/business/${bId}/staff/${newStaffId}`)
+      .set('Authorization', 'Bearer ' + token)
+      .send();
+    expect(result.statusCode).toEqual(200);
+    expect(result.body.firstName).toEqual(newStaffMember.firstName);
+    expect(result.body.emailId).toEqual(newStaffMember.emailId);
+  });
+
+  it('Edit staff member', async () => {
+    const updateStaff = {
+      firstName: 'teesra chamcha',
+      emailId: 'teesra@gmail.com',
+    };
+    let result = await request(app.getHttpServer())
+      .patch(`/business/${bId}/staff/${newStaffId}`)
+      .set('Authorization', 'Bearer ' + token)
+      .send(updateStaff);
+    expect(result.statusCode).toEqual(200);
+
+    result = await request(app.getHttpServer())
+      .get(`/business/${bId}/staff`)
+      .set('Authorization', 'Bearer ' + token)
+      .send();
+    expect(result.statusCode).toEqual(200);
+    expect(result.body.length).toEqual(2);
+    result = await request(app.getHttpServer())
+      .get(`/business/${bId}/staff/${newStaffId}`)
+      .set('Authorization', 'Bearer ' + token)
+      .send();
+    expect(result.statusCode).toEqual(200);
+    expect(result.body.firstName).toEqual(updateStaff.firstName);
+    expect(result.body.emailId).toEqual(updateStaff.emailId);
+  });
+});
+
+describe('User Testcases', () => {
+  let app: NestFastifyApplication;
+  let token;
+  let bId;
+  let userId;
+  let newStaffId;
+  beforeAll(async () => {
+    const moduleFixture: TestingModule = await Test.createTestingModule({
+      imports: [AppModule],
+    }).compile();
+
+    app = moduleFixture.createNestApplication<NestFastifyApplication>(
+      new FastifyAdapter(),
+    );
+    await app.init();
+    await app.getHttpAdapter().getInstance().ready();
+  });
+
+  beforeEach(async () => {
+    let result = await request(app.getHttpServer())
+      .post('/sign-in')
+      .send(signInBody);
+    expect(result.statusCode).toEqual(201);
+    expect(result.body.token).not.toBeNull();
+    token = result.body.token;
+    result = await request(app.getHttpServer())
+      .get('/business/get-owned-business')
+      .set('Authorization', 'Bearer ' + token)
+      .send();
+    bId = result.body.bId;
+  });
+
+  it('Check user data', async () => {
+    const result = await request(app.getHttpServer())
+      .get('/users/get-info')
+      .set('Authorization', 'Bearer ' + token)
+      .send();
+    expect(result.statusCode).toEqual(200);
+    expect(result.body.firstName).toEqual(registerBussiness.user.firstName);
+    expect(result.body.lastName).toEqual(registerBussiness.user.lastName);
+    userId = result.body.id;
+  });
+
+  it('Update and check user data', async () => {
+    const newName = {
+      firstName: 'New name',
+      lastName: 'New lastname',
+    };
+    let result = await request(app.getHttpServer())
+      .patch(`/users/${userId}`)
+      .set('Authorization', 'Bearer ' + token)
+      .send(newName);
+    expect(result.statusCode).toEqual(200);
+    result = await request(app.getHttpServer())
+      .get(`/users/get-info`)
+      .set('Authorization', 'Bearer ' + token)
+      .send();
+    expect(result.statusCode).toEqual(200);
+
+    expect(result.body.firstName).toEqual(newName.firstName);
+    expect(result.body.lastName).toEqual(newName.lastName);
   });
 });

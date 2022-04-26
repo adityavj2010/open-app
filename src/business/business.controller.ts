@@ -42,7 +42,6 @@ export class BusinessController {
   @Get('get-owned-business')
   async getOwnBusiness(@Req() req): Promise<Business> {
     const ctx = GetContext(req);
-    console.log({ ctx });
     const businesses = await this.businessService.findAll({ uId: ctx.id });
     return businesses[0];
   }
@@ -58,6 +57,15 @@ export class BusinessController {
     return this.staffService.create(body);
   }
 
+  @Get(':bId/staff/:id')
+  async getStaffById(
+    @Req() req,
+    @Param('id') id: number,
+    @Param('bId') bId: number,
+  ) {
+    return this.staffService.findOne(id);
+  }
+
   @Patch(':bId/staff/:id')
   async updateStaff(
     @Req() req,
@@ -69,7 +77,9 @@ export class BusinessController {
       bId,
       GetContext(req).id,
     );
+
     await this.businessService.checkStaffBusinessAssociatino(id, bId);
+
     return this.staffService.update(+id, updateStaffDto);
   }
 

@@ -12,11 +12,15 @@ const connection = mysql.createConnection({
 
 export async function clearDB() {
   return new Promise((resolve, reject) => {
-    connection.query(`DROP DATABASE ${db.database}`, () => {
-      connection.query(`CREATE DATABASE ${db.database}`, () => {
-        console.log(`Cleared Database ${db.database}`);
-        return resolve(true);
+    try {
+      connection.query(`DROP DATABASE ${db.database}`, () => {
+        connection.query(`CREATE DATABASE ${db.database}`, () => {
+          return resolve(true);
+        });
       });
-    });
+    } catch (e) {
+      console.error('Issue in clear DB');
+      resolve(true);
+    }
   });
 }

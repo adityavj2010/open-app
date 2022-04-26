@@ -48,8 +48,8 @@ export class BusinessService {
   }
 
   async checkStaffBusinessAssociatino(id, bId) {
-    const staff = await this.staffService.findOne(id);
-    if (staff.bId !== bId) {
+    const staff = await this.staffService.findOne(Number(id));
+    if (staff.bId != bId) {
       throw new HttpException(ERRORS.UNAUTHORIZED, HttpStatus.UNAUTHORIZED);
     }
   }
