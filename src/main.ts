@@ -9,7 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 
 async function bootstrap() {
   const options = {
-    // logger: logger,
+    logger: logger,
   };
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
