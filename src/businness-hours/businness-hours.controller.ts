@@ -18,7 +18,10 @@ export class BusinnessHoursController {
   constructor(private readonly businnessHoursService: BusinnessHoursService) {}
 
   @Post()
-  create(@Body() createBusinnessHourDto: CreateBusinnessHourDto) {
+  create(
+    @Body()
+    createBusinnessHourDto: CreateBusinnessHourDto | CreateBusinnessHourDto[],
+  ) {
     return this.businnessHoursService.create(createBusinnessHourDto);
   }
 

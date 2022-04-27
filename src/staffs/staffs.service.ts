@@ -20,16 +20,6 @@ export class StaffsService {
   ) {}
 
   async create(staff: CreateStaffDto) {
-    const staffs = await this.staffRepository.find({
-      bId: staff.bId,
-      emailId: staff.emailId,
-    });
-    if (staffs.length > 0) {
-      throw new HttpException(
-        ERRORS.STAFF_ALREADY_CREATED,
-        HttpStatus.CONFLICT,
-      );
-    }
     return this.staffRepository.save(staff).then((item) => {
       return item.id;
     });

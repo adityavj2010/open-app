@@ -8,9 +8,15 @@ export class CreateStaffDto {
   @ApiPropertyOptional()
   firstName: string;
 
-  @ApiProperty()
-  emailId: string;
+  @ApiPropertyOptional()
+  igProfile?: string;
 
   @ApiPropertyOptional()
-  description?: string;
+  fbProfile?: string;
+
+  @ApiPropertyOptional()
+  tiktokProfile?: string;
+
+  @ApiPropertyOptional()
+  desc?: string;
 }

@@ -29,7 +29,6 @@ const registerBussiness: RegisterBussiness = {
   staff: [
     {
       firstName: 'pehla chamcha',
-      emailId: 'pehlachamcha@gmail.com',
     },
   ],
   businessServices: [
@@ -91,6 +90,7 @@ describe('Sign up', () => {
   it('Business Sign-up', async () => {
     const result = await request(app.getHttpServer())
       .post('/bussiness-sign-up')
+      .set('Content-Type', 'application/json')
       .send(registerBussiness);
     expect(result.statusCode).toEqual(201);
     const body = result.body;
@@ -109,9 +109,12 @@ describe('Sign up', () => {
   it('Sign in check', async () => {
     const result = await request(app.getHttpServer())
       .post('/sign-in')
+      .set('Content-Type', 'application/json')
       .send(signInBody);
+
     expect(result.statusCode).toEqual(201);
     expect(result.body.token).not.toBeNull();
+    console.log('result.body', result.body);
     token = result.body.token;
   });
 });
@@ -279,7 +282,6 @@ describe('Staff Testcases', () => {
     expect(result.statusCode).toEqual(200);
 
     expect(result.body.length).toEqual(1);
-    expect(result.body[0].emailId).toEqual(registerBussiness.staff[0].emailId);
     expect(result.body[0].firstName).toEqual(
       registerBussiness.staff[0].firstName,
     );
@@ -311,13 +313,11 @@ describe('Staff Testcases', () => {
       .send();
     expect(result.statusCode).toEqual(200);
     expect(result.body.firstName).toEqual(newStaffMember.firstName);
-    expect(result.body.emailId).toEqual(newStaffMember.emailId);
   });
 
   it('Edit staff member', async () => {
     const updateStaff = {
       firstName: 'teesra chamcha',
-      emailId: 'teesra@gmail.com',
     };
     let result = await request(app.getHttpServer())
       .patch(`/business/${bId}/staff/${newStaffId}`)
@@ -337,7 +337,6 @@ describe('Staff Testcases', () => {
       .send();
     expect(result.statusCode).toEqual(200);
     expect(result.body.firstName).toEqual(updateStaff.firstName);
-    expect(result.body.emailId).toEqual(updateStaff.emailId);
   });
 });
 

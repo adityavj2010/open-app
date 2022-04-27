@@ -1,6 +1,8 @@
 import {
+  forwardRef,
   HttpException,
   HttpStatus,
+  Inject,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -18,7 +20,8 @@ export class BusinessService {
   constructor(
     @InjectRepository(Business)
     private businessRepository: Repository<Business>,
-    private readonly userService: UsersService,
+    @Inject(forwardRef(() => UsersService))
+    private userService: UsersService,
     private readonly staffService: StaffsService,
   ) {}
 

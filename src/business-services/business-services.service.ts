@@ -13,8 +13,12 @@ export class BusinessServicesService {
     private businnessServiceRepository: Repository<BusinessService>,
   ) {}
 
-  async create(createBusinessServiceDto: CreateBusinessServiceDto) {
-    return this.businnessServiceRepository.save(createBusinessServiceDto);
+  async create(
+    createBusinessServiceDto:
+      | CreateBusinessServiceDto
+      | CreateBusinessServiceDto[],
+  ) {
+    return this.businnessServiceRepository.insert(createBusinessServiceDto);
   }
 
   findAll(query = null) {

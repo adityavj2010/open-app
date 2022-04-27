@@ -14,13 +14,10 @@ export class BusinnessHoursService {
     private businnessHoursRepository: Repository<BusinnessHour>,
   ) {}
 
-  async create(createBusinnessHourDto: CreateBusinnessHourDto) {
-    const entries = await this.findAll(createBusinnessHourDto);
-    if (entries.length > 0) {
-      throw new HttpException(ERRORS.DUPLICATE_ENTRY, HttpStatus.CONFLICT);
-    }
-
-    return this.businnessHoursRepository.save(createBusinnessHourDto);
+  async create(
+    createBusinnessHourDto: CreateBusinnessHourDto | CreateBusinnessHourDto[],
+  ) {
+    return this.businnessHoursRepository.insert(createBusinnessHourDto);
   }
 
   findAll(query = null) {
@@ -28,14 +25,14 @@ export class BusinnessHoursService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} businnessHour`;
+    return this.businnessHoursRepository.findOne(id);
   }
 
   update(id: number, updateBusinnessHourDto: UpdateBusinnessHourDto) {
-    return `This action updates a #${id} businnessHour`;
+    return this.businnessHoursRepository.update(id, updateBusinnessHourDto);
   }
 
   remove(id: number) {
-    return `This action removes a #${id} businnessHour`;
+    return this.businnessHoursRepository.delete(id);
   }
 }

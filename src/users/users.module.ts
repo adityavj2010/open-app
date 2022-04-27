@@ -15,6 +15,7 @@ import { BusinessModule } from '../business/business.module';
       signOptions: { expiresIn: '36000s' },
     }),
     forwardRef(() => AuthModule),
+    forwardRef(() => BusinessModule),
   ],
   controllers: [UsersController],
   providers: [UsersService, UsersController],

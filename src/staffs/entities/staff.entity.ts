@@ -9,7 +9,6 @@ import {
 import { Business } from '../../business/entities/business.entity';
 
 @Entity()
-@Unique(['bId', 'emailId'])
 export class Staff {
   @PrimaryGeneratedColumn()
   id: number;
@@ -20,9 +19,16 @@ export class Staff {
   @Column({ nullable: false })
   firstName: string;
 
-  @Column({ nullable: false })
-  emailId: string;
+  // Profile igProfile, fbProfile, tiktokProfile desc picture
+  @Column({ nullable: true, default: '' })
+  igProfile: string;
 
   @Column({ nullable: true, default: '' })
-  description: string;
+  fbProfile: string;
+
+  @Column({ nullable: true, default: '' })
+  tiktokProfile: string;
+
+  @Column({ nullable: true, default: '' })
+  desc: string;
 }

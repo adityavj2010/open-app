@@ -20,7 +20,12 @@ export class BusinessServicesController {
   ) {}
 
   @Post()
-  create(@Body() createBusinessServiceDto: CreateBusinessServiceDto) {
+  create(
+    @Body()
+    createBusinessServiceDto:
+      | CreateBusinessServiceDto
+      | CreateBusinessServiceDto[],
+  ) {
     return this.businessServicesService.create(createBusinessServiceDto);
   }
 

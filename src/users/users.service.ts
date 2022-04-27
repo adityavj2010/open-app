@@ -14,6 +14,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ERRORS } from '../misc/errors';
 import { JwtService } from '@nestjs/jwt';
 import { AuthService } from '../auth/auth.service';
+import { BusinessService } from '../business/business.service';
 
 @Injectable()
 export class UsersService {
@@ -22,6 +23,7 @@ export class UsersService {
     private usersRepository: Repository<User>,
     @Inject(forwardRef(() => AuthService))
     private auth: AuthService,
+    private businessService: BusinessService,
   ) {}
 
   create(createUserDto: CreateUserDto) {
@@ -106,6 +108,12 @@ export class UsersService {
     }
     const user = users[0];
 
-    return await this.auth.login(user);
+    const response = await this.auth.login(user);
+    const businesses = await this.businessService.findAll({ uId: user.id });
+    let business = {};
+    if (businesses.length >= 1) {
+      business = businesses[0];
+    }
+    return { ...response, ...user, ...business };
   }
 }

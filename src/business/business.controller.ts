@@ -83,7 +83,7 @@ export class BusinessController {
     return this.staffService.update(+id, updateStaffDto);
   }
 
-  @Delete(':bId/staff/:id')
+  @Patch(':bId/staff/:id/delete')
   async deleteStaff(
     @Req() req,
     @Param('id') id: number,
