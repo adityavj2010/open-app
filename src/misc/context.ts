@@ -8,9 +8,11 @@ export function GetContext(request): Context {
     emailId: '',
     id: 0,
   };
-
-  ctx['emailId'] = request.raw.customContext.emailId;
-  ctx['id'] = request.raw.customContext.id;
+  const customContext = request.raw?.customContext
+    ? request?.raw?.customContext
+    : request.customContext;
+  ctx['emailId'] = customContext.emailId;
+  ctx['id'] = customContext.id;
   return ctx;
 }
 export function SetContext(request, token) {
