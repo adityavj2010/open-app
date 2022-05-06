@@ -19,3 +19,4 @@ import { LocalStrategy } from './strategies/local.strategy';
   exports: [AuthService, JwtModule],
 })
 export class AuthModule {}
+// curl -X POST http://localhost:3000/api/sign-in -d '{"emailId": "aditya", "password": "changeme"}' -H "Content-Type: application/json"

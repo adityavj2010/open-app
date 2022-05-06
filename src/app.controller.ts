@@ -1,15 +1,12 @@
 import {
-  Get,
   Controller,
   Post,
-  Req,
   Body,
-  Query,
   Param,
   Logger,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
-import { AppService } from './app.service';
-import { Request } from 'express';
 import {
   ApiOperation,
   ApiProperty,
@@ -30,9 +27,10 @@ import { BusinnessHoursController } from './businness-hours/businness-hours.cont
 import { StaffsController } from './staffs/staffs.controller';
 import { UsersController } from './users/users.controller';
 
-import { JwtService } from '@nestjs/jwt';
 import { AuthService } from './auth/auth.service';
-import { UsersModule } from './users/users.module';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 
 class Response {
   token: string;
@@ -120,5 +118,27 @@ export class AppController {
   })
   requestTempPassword(@Param('userId') userId: number): Promise<string> {
     return this.userService.requestTempPassword(userId);
+  }
+
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './dist/uploads',
+        filename: (req, file, cb) => {
+          const randomName = Array(32)
+            .fill(null)
+            .map(() => Math.round(Math.random() * 16).toString(16))
+            .join('');
+          cb(null, `${randomName}${extname(file.originalname)}`);
+        },
+      }),
+    }),
+  )
+  @Post('file')
+  uploadFile(@UploadedFile() file: Express.Multer.File) {
+    console.log();
+    return {
+      filename: file.filename,
+    };
   }
 }

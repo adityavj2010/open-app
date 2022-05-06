@@ -31,4 +31,7 @@ export class Staff {
 
   @Column({ nullable: true, default: '' })
   desc: string;
+
+  @Column({ nullable: true, default: '' })
+  profilePicture: string;
 }

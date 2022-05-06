@@ -30,4 +30,13 @@ export class BusinessService {
   @Column({ nullable: false })
   @Min(0)
   cost: number;
+
+  @Column({ nullable: true })
+  desc: string;
+
+  @Column({ nullable: true, default: '' })
+  picture: string;
+
+  @Column({ nullable: true, default: '' })
+  extraData: string;
 }

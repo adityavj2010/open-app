@@ -403,3 +403,20 @@ describe('User Testcases', () => {
     expect(result.body.lastName).toEqual(newName.lastName);
   });
 });
+
+// var form = new FormData();
+// form.append("file", fileInput.files[0], "Screen Shot 2022-03-10 at 11.45.26 AM.png");
+//
+// var settings = {
+//   "url": "http://localhost:3000/api/file",
+//   "method": "POST",
+//   "timeout": 0,
+//   "processData": false,
+//   "mimeType": "multipart/form-data",
+//   "contentType": false,
+//   "data": form
+// };
+//
+// $.ajax(settings).done(function (response) {
+//   console.log(response);
+// });

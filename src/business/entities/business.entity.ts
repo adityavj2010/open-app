@@ -31,4 +31,22 @@ export class Business {
 
   @Column({ default: '' })
   description: string;
+
+  @Column({ default: '' })
+  image1: string;
+
+  @Column({ default: '' })
+  image2: string;
+
+  @Column({ default: '' })
+  image3: string;
+
+  @Column({ default: '' })
+  extraData1: string;
+
+  @Column({ default: '' })
+  extraData2: string;
+
+  @Column({ default: '' })
+  extraData3: string;
 }

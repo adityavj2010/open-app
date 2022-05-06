@@ -17,6 +17,13 @@ export class BusinnessHoursService {
   async create(
     createBusinnessHourDto: CreateBusinnessHourDto | CreateBusinnessHourDto[],
   ) {
+    let bid = 1;
+    if (createBusinnessHourDto.constructor.name === 'Array') {
+      bid = createBusinnessHourDto[0].bId;
+    } else {
+      bid = createBusinnessHourDto['bId'];
+    }
+    await this.businnessHoursRepository.delete({ bId: bid });
     return this.businnessHoursRepository.insert(createBusinnessHourDto);
   }
 

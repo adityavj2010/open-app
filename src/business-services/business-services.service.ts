@@ -26,14 +26,14 @@ export class BusinessServicesService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} businessService`;
+    return this.businnessServiceRepository.findOne(id);
   }
 
   update(id: number, updateBusinessServiceDto: UpdateBusinessServiceDto) {
-    return `This action updates a #${id} businessService`;
+    return this.businnessServiceRepository.update(id,updateBusinessServiceDto);
   }
 
   remove(id: number) {
-    return `This action removes a #${id} businessService`;
+    return this.businnessServiceRepository.delete(id);
   }
 }

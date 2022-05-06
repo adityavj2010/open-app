@@ -9,7 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 
 async function bootstrap() {
   const options = {
-    logger: logger,
+    // logger: logger,
   };
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
@@ -31,3 +31,5 @@ async function bootstrap() {
 bootstrap().catch((e) => {
   console.error('Error caught in bootstrap', e);
 });
+
+// curl -X POST http://localhost:3000/api/sign-in -d '{"emailId": "aditya", "password": "changeme"}' -H "Content-Type: application/json"

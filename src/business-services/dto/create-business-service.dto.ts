@@ -14,4 +14,13 @@ export class CreateBusinessServiceDto {
 
   @ApiProperty()
   cost: number;
+
+  @ApiPropertyOptional()
+  desc?: string;
+
+  @ApiPropertyOptional()
+  picture?: string;
+
+  @ApiPropertyOptional()
+  extraData?: string;
 }

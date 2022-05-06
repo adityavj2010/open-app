@@ -19,4 +19,7 @@ export class CreateStaffDto {
 
   @ApiPropertyOptional()
   desc?: string;
+
+  @ApiPropertyOptional()
+  profilePicture?: string;
 }

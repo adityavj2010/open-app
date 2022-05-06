@@ -23,4 +23,22 @@ export class CreateBusinessDto {
 
   @ApiPropertyOptional()
   description?: string;
+
+  @ApiPropertyOptional()
+  image1?: string;
+
+  @ApiPropertyOptional()
+  image2?: string;
+
+  @ApiPropertyOptional()
+  image3?: string;
+
+  @ApiPropertyOptional()
+  extraData1?: string;
+
+  @ApiPropertyOptional()
+  extraData2?: string;
+
+  @ApiPropertyOptional()
+  extraData3?: string;
 }

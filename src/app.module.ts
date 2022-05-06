@@ -30,7 +30,12 @@ import { ContextMiddleware } from '../middleware/context.middleware';
   imports: [
     ConfigModule.forRoot({ envFilePath: './env/.development.env' }),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'frontend', 'dist', 'open-app'),
+      serveRoot: '/assets',
+      rootPath: join(__dirname, '..', 'uploads'),
+    }),
+
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', '..', 'frontend', 'dist', 'open-app'),
     }),
     TypeOrmModule.forRoot({
       type: 'mysql',
