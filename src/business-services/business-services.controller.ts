@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { BusinessServicesService } from './business-services.service';
 import { CreateBusinessServiceDto } from './dto/create-business-service.dto';
@@ -30,8 +31,8 @@ export class BusinessServicesController {
   }
 
   @Get()
-  findAll() {
-    return this.businessServicesService.findAll();
+  findAll(@Query() query) {
+    return this.businessServicesService.findAll(query);
   }
 
   @Get(':id')

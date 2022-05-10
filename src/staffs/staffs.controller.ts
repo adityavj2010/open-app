@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Req,
+  Query,
 } from '@nestjs/common';
 import { StaffsService } from './staffs.service';
 import { CreateStaffDto } from './dto/create-staff.dto';
@@ -25,12 +26,10 @@ export class StaffsController {
     return this.staffsService.create(createStaffDto);
   }
 
-  // @UseGuards(JwtAuthGuard)
-  // @Get()
-  // findAll(@Req() request: Request) {
-  //   const ctx = GetContext(request);
-  //   return this.staffsService.findAll();
-  // }
+  @Get()
+  findAll(@Query() query) {
+    return this.staffsService.findAll(query);
+  }
 
   @Get(':id')
   findOne(@Param('id') id: string) {

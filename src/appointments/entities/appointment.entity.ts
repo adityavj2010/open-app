@@ -4,12 +4,11 @@ import {
   JoinColumn,
   OneToOne,
   PrimaryGeneratedColumn,
+  Unique,
 } from 'typeorm';
 
-import { Business } from '../../business/entities/business.entity';
-import { User as Users } from '../../users/entities/user.entity';
-
 @Entity()
+@Unique(['bId', 'staffId', 'startDateTime'])
 export class Appointment {
   @PrimaryGeneratedColumn()
   appId: number;
@@ -19,6 +18,12 @@ export class Appointment {
 
   @Column({ nullable: false })
   uId: number;
+
+  @Column({ nullable: false })
+  staffId: number;
+
+  @Column({ nullable: false })
+  serviceId: number;
 
   @Column({ nullable: false })
   startDateTime: Date;

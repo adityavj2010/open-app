@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { BusinnessHoursService } from './businness-hours.service';
 import { CreateBusinnessHourDto } from './dto/create-businness-hour.dto';
@@ -26,8 +27,9 @@ export class BusinnessHoursController {
   }
 
   @Get()
-  findAll() {
-    return this.businnessHoursService.findAll();
+  findAll(@Query() queryParams) {
+    console.log({ queryParams });
+    return this.businnessHoursService.findAll(queryParams);
   }
 
   @Get(':id')

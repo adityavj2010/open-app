@@ -30,7 +30,7 @@ export class BusinessServicesService {
   }
 
   update(id: number, updateBusinessServiceDto: UpdateBusinessServiceDto) {
-    return this.businnessServiceRepository.update(id,updateBusinessServiceDto);
+    return this.businnessServiceRepository.update(id, updateBusinessServiceDto);
   }
 
   remove(id: number) {

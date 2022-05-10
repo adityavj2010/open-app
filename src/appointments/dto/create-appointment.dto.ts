@@ -1,4 +1,4 @@
-import { Column } from 'typeorm';
+import { Column, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateAppointmentDto {
@@ -14,11 +14,11 @@ export class CreateAppointmentDto {
   @ApiProperty({ description: 'start date time' })
   startDateTime: Date;
 
-  @ApiPropertyOptional({
-    description: 'Is it suppose to be repeated',
-    default: false,
-  })
-  repeat: boolean;
+  @ApiProperty({ description: 'Staff Id' })
+  staffId: number;
+
+  @ApiProperty({ description: 'Service Id' })
+  serviceId: number;
 
   @ApiPropertyOptional({ description: 'Any notes' })
   notes: string;

@@ -11,6 +11,7 @@ import { UsersModule } from '../src/users/users.module';
 import { RegisterBussiness } from '../src/users/dto/create-user.dto';
 import { ERRORS } from '../src/misc/errors';
 import { response } from 'express';
+import { CreateAppointmentDto } from '../src/appointments/dto/create-appointment.dto';
 
 const registerBussiness: RegisterBussiness = {
   user: {
@@ -51,12 +52,12 @@ const registerBussiness: RegisterBussiness = {
     },
     {
       startTime: '10:00:00',
-      endTime: '15:00:00',
+      endTime: '14:00:00',
       day: 2,
     },
     {
       startTime: '10:00:00',
-      endTime: '15:00:00',
+      endTime: '13:00:00',
       day: 3,
     },
   ],
@@ -66,6 +67,12 @@ const signInBody = {
   emailId: 'adityavj2010@gmail.com',
   password: 'password',
 };
+function addDays(date, days) {
+  const result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+}
+
 describe('Sign up', () => {
   let app: NestFastifyApplication;
   let token;
@@ -114,7 +121,6 @@ describe('Sign up', () => {
 
     expect(result.statusCode).toEqual(201);
     expect(result.body.token).not.toBeNull();
-    console.log('result.body', result.body);
     token = result.body.token;
   });
 });
@@ -403,6 +409,163 @@ describe('User Testcases', () => {
     expect(result.body.lastName).toEqual(newName.lastName);
   });
 });
+describe('User Testcases', () => {
+  let app: NestFastifyApplication;
+  let token;
+  let bId;
+  let userId;
+  let newStaffId;
+  let business;
+  let bServices;
+  let staff;
+  beforeAll(async () => {
+    const moduleFixture: TestingModule = await Test.createTestingModule({
+      imports: [AppModule],
+    }).compile();
+
+    app = moduleFixture.createNestApplication<NestFastifyApplication>(
+      new FastifyAdapter(),
+    );
+    await app.init();
+    await app.getHttpAdapter().getInstance().ready();
+  });
+
+  beforeEach(async () => {
+    let result = await request(app.getHttpServer())
+      .post('/sign-in')
+      .send(signInBody);
+    expect(result.statusCode).toEqual(201);
+    expect(result.body.token).not.toBeNull();
+    token = result.body.token;
+    result = await request(app.getHttpServer())
+      .get('/business/get-owned-business')
+      .set('Authorization', 'Bearer ' + token)
+      .send();
+    bId = result.body.bId;
+    business = await request(app.getHttpServer()).get(`/business`).send();
+    business = business.body;
+    console.log({ business: business });
+
+    const firstBid = business[0].bId;
+    bServices = await request(app.getHttpServer())
+      .get(`/business-services?bId=${firstBid}`)
+      .send();
+    bServices = bServices.body;
+    console.log({ bServices });
+    staff = await request(app.getHttpServer())
+      .get(`/staffs?bId=${firstBid}`)
+      .send();
+    staff = staff.body;
+    console.log({ staff });
+  });
+
+  it('check book appointment', async () => {
+    const fivepm = new Date();
+    const appointment: CreateAppointmentDto = {
+      bId: business[0].bId,
+      bsId: bServices[0].id,
+      staffId: staff[0].id,
+      startDateTime: fivepm,
+      uId: 1,
+      serviceId: bServices[0].id,
+      notes: 'Test',
+    };
+    let result = await request(app.getHttpServer())
+      .post('/appointments/book')
+      .send(appointment);
+    expect(result.statusCode).toEqual(HttpStatus.CREATED);
+    result = await request(app.getHttpServer())
+      .post('/appointments/book')
+      .send(appointment);
+    expect(result.statusCode).toEqual(HttpStatus.BAD_REQUEST);
+  });
+
+  it('Verify get appointment', async () => {
+    const date = new Date();
+    const nextDay = addDays(date, 1);
+    const appointment: CreateAppointmentDto = {
+      bId: business[0].bId,
+      bsId: bServices[0].id,
+      staffId: staff[0].id,
+      startDateTime: nextDay,
+      uId: 1,
+      serviceId: bServices[0].id,
+      notes: 'Test',
+    };
+
+    let result = await request(app.getHttpServer())
+      .post('/appointments/book')
+      .send(appointment);
+    expect(result.statusCode).toEqual(HttpStatus.CREATED);
+    const nextToNextDay = addDays(nextDay, 1);
+
+    appointment.startDateTime = nextToNextDay;
+    result = await request(app.getHttpServer())
+      .post('/appointments/book')
+      .send(appointment);
+    expect(result.statusCode).toEqual(HttpStatus.CREATED);
+
+    result = await request(app.getHttpServer())
+      .get(`/appointments?bId=${business[0].bId}`)
+      .send();
+    expect(result.statusCode).toEqual(HttpStatus.OK);
+    expect(result.body.length).toEqual(3);
+
+    result = await request(app.getHttpServer())
+      .get(`/appointments?bId=${business[0].bId}&startDate=${new Date()}`)
+      .send();
+    expect(result.statusCode).toEqual(HttpStatus.OK);
+    expect(result.body.length).toEqual(3);
+
+    result = await request(app.getHttpServer())
+      .get(`/appointments?bId=${business[0].bId + 1}`)
+      .send();
+    expect(result.statusCode).toEqual(HttpStatus.OK);
+    expect(result.body.length).toEqual(0);
+
+    result = await request(app.getHttpServer())
+      .get(
+        `/appointments?bId=${business[0].bId}&startDate=${minusHour(nextDay)}`,
+      )
+      .send();
+    expect(result.statusCode).toEqual(HttpStatus.OK);
+    expect(result.body.length).toEqual(2);
+
+    result = await request(app.getHttpServer())
+      .get(
+        `/appointments?bId=${business[0].bId}&startDate=${minusHour(nextDay)}`,
+      )
+      .send();
+    expect(result.statusCode).toEqual(HttpStatus.OK);
+    expect(result.body.length).toEqual(2);
+
+    result = await request(app.getHttpServer())
+      .get(
+        `/appointments?bId=${business[0].bId}&startDate=${minusHour(
+          nextToNextDay,
+        )}`,
+      )
+      .send();
+    expect(result.statusCode).toEqual(HttpStatus.OK);
+    expect(result.body.length).toEqual(1);
+
+    result = await request(app.getHttpServer())
+      .get(
+        `/appointments?bId=${business[0].bId}&startDate=${minusHour(
+          nextDay,
+        )}&endDate=${nextToNextDay}`,
+      )
+      .send();
+    expect(result.statusCode).toEqual(HttpStatus.OK);
+    expect(result.body.length).toEqual(1);
+  });
+});
+
+function minusHour(date) {
+  const date1 = new Date(date.toString());
+  date1.setHours(date1.getHours() + 2);
+  return new Date(date1);
+}
 
 // var form = new FormData();
 // form.append("file", fileInput.files[0], "Screen Shot 2022-03-10 at 11.45.26 AM.png");
