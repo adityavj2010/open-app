@@ -73,10 +73,10 @@ export class BusinessController {
     @Param('bId') bId: number,
     @Body() updateStaffDto: UpdateStaffDto,
   ) {
-    await this.businessService.checkBusinessUserAssociation(
-      bId,
-      GetContext(req).id,
-    );
+    // await this.businessService.checkBusinessUserAssociation(
+    //   bId,
+    //   GetContext(req).id,
+    // );
 
     await this.businessService.checkStaffBusinessAssociatino(id, bId);
 
@@ -89,10 +89,10 @@ export class BusinessController {
     @Param('id') id: number,
     @Param('bId') bId: number,
   ) {
-    await this.businessService.checkBusinessUserAssociation(
-      bId,
-      GetContext(req).id,
-    );
+    // await this.businessService.checkBusinessUserAssociation(
+    //   bId,
+    //   GetContext(req).id,
+    // );
     await this.businessService.checkStaffBusinessAssociatino(id, bId);
 
     return this.staffService.remove(+id);

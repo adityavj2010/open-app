@@ -80,19 +80,18 @@ export class AppointmentsService {
     const bHour = bHours.find((obj) => obj.day === day);
     const startTime = bHour.startTime;
     const endTime = bHour.endTime;
-    for (; startTime < endTime; ) {
-      startTime;
-    }
+    this.appointmentRepository.find({});
+    for (; startTime < endTime; ) {}
   }
 
   async getAvailableAppointments(bId, startDate, endDate) {
     const available = [];
     const ed = moment(endDate);
     const sd = moment(startDate);
+
     const diff = ed.diff(sd, 'days');
     for (let i = 0; i < diff; i++) {
       startDate = addDays(startDate, 1);
-      const day = startDate.getDay();
     }
   }
 }

@@ -11,6 +11,7 @@ export function GetContext(request): Context {
   const customContext = request.raw?.customContext
     ? request?.raw?.customContext
     : request.customContext;
+  console.log('conetxt', request);
   ctx['emailId'] = customContext.emailId;
   ctx['id'] = customContext.id;
   return ctx;

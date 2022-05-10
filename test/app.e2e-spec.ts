@@ -12,7 +12,7 @@ import { RegisterBussiness } from '../src/users/dto/create-user.dto';
 import { ERRORS } from '../src/misc/errors';
 import { response } from 'express';
 import { CreateAppointmentDto } from '../src/appointments/dto/create-appointment.dto';
-
+const url = 'http://rxfarm91.cse.buffalo.edu:5001/api/';
 const registerBussiness: RegisterBussiness = {
   user: {
     firstName: 'Aditya ',
