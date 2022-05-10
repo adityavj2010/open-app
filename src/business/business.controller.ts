@@ -78,7 +78,7 @@ export class BusinessController {
     //   GetContext(req).id,
     // );
 
-    await this.businessService.checkStaffBusinessAssociatino(id, bId);
+    // await this.businessService.checkStaffBusinessAssociatino(id, bId);
 
     return this.staffService.update(+id, updateStaffDto);
   }
@@ -93,7 +93,7 @@ export class BusinessController {
     //   bId,
     //   GetContext(req).id,
     // );
-    await this.businessService.checkStaffBusinessAssociatino(id, bId);
+    // await this.businessService.checkStaffBusinessAssociatino(id, bId);
 
     return this.staffService.remove(+id);
   }
@@ -109,8 +109,8 @@ export class BusinessController {
     @Body() updateBusinessDto: UpdateBusinessDto,
     @Req() req,
   ) {
-    const ctx = GetContext(req);
-    await this.businessService.checkBusinessUserAssociation(id, ctx.id);
+    // const ctx = GetContext(req);
+    // await this.businessService.checkBusinessUserAssociation(id, ctx.id);
     return this.businessService.update(+id, updateBusinessDto);
   }
 
