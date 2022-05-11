@@ -25,6 +25,7 @@ export class BusinnessHoursService {
           bId: Number(bid),
           day: Number(createBusinnessHourDto[i]['day']),
         };
+        await this.businnessHoursRepository.delete(criteria);
       }
     } else {
       bid = createBusinnessHourDto['bId'];
@@ -32,6 +33,7 @@ export class BusinnessHoursService {
         bId: Number(bid),
         day: Number(createBusinnessHourDto['day']),
       };
+      await this.businnessHoursRepository.delete(criteria);
     }
 
     return this.businnessHoursRepository.insert(createBusinnessHourDto);
