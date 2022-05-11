@@ -9,6 +9,7 @@ import {
   HttpException,
   HttpStatus,
   Req,
+  Query,
 } from '@nestjs/common';
 import { BusinessService } from './business.service';
 import { CreateBusinessDto } from './dto/create-business.dto';
@@ -20,6 +21,7 @@ import { UpdateStaffDto } from '../staffs/dto/update-staff.dto';
 import { ERRORS } from '../misc/errors';
 import { Business } from './entities/business.entity';
 import { GetContext } from '../misc/context';
+import { AppointmentsService } from '../appointments/appointments.service';
 
 @ApiTags('Business')
 @Controller('business')
@@ -35,8 +37,8 @@ export class BusinessController {
   }
 
   @Get()
-  findAll() {
-    return this.businessService.findAll(null);
+  async findAll(@Query() query) {
+    return this.businessService.findAll(query);
   }
 
   @Get('get-owned-business')

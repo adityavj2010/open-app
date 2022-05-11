@@ -14,6 +14,7 @@ import { Business } from './entities/business.entity';
 import { UsersService } from '../users/users.service';
 import { ERRORS } from '../misc/errors';
 import { StaffsService } from '../staffs/staffs.service';
+import { AppointmentsService } from '../appointments/appointments.service';
 
 @Injectable()
 export class BusinessService {
@@ -23,6 +24,7 @@ export class BusinessService {
     @Inject(forwardRef(() => UsersService))
     private userService: UsersService,
     private readonly staffService: StaffsService,
+    private readonly appointmentService: AppointmentsService,
   ) {}
 
   async create(business: CreateBusinessDto) {
@@ -57,8 +59,24 @@ export class BusinessService {
     }
   }
 
-  findAll(queryParams) {
-    return this.businessRepository.find(queryParams);
+  async findAll(queryParams) {
+    let startDate = null;
+    if (queryParams.startDate) {
+      startDate = queryParams.startDate;
+      delete queryParams.startDate;
+    }
+    const businesses = await this.businessRepository.find(queryParams);
+    if (startDate) {
+      for (let i = 0; i < businesses.length; i++) {
+        businesses[i]['availableAppointments'] =
+          await this.appointmentService.getAvailableAppointmentsOfADay(
+            new Date(startDate),
+            businesses[i].bId,
+          );
+      }
+    }
+
+    return businesses;
   }
 
   findOne(id: number) {
