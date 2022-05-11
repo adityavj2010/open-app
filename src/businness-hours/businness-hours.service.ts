@@ -19,11 +19,21 @@ export class BusinnessHoursService {
   ) {
     let bid = 1;
     if (createBusinnessHourDto.constructor.name === 'Array') {
-      bid = createBusinnessHourDto[0].bId;
+      for (let i = 0; i < createBusinnessHourDto['length']; i++) {
+        bid = createBusinnessHourDto[i].bId;
+        const criteria = {
+          bId: Number(bid),
+          day: Number(createBusinnessHourDto[i]['day']),
+        };
+      }
     } else {
       bid = createBusinnessHourDto['bId'];
+      const criteria = {
+        bId: Number(bid),
+        day: Number(createBusinnessHourDto['day']),
+      };
     }
-    await this.businnessHoursRepository.delete({ bId: bid });
+
     return this.businnessHoursRepository.insert(createBusinnessHourDto);
   }
 

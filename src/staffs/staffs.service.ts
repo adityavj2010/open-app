@@ -49,6 +49,6 @@ export class StaffsService {
       throw new HttpException('Invalid staff id', HttpStatus.BAD_REQUEST);
     }
 
-    return this.remove(id);
+    return this.staffRepository.delete(id);
   }
 }

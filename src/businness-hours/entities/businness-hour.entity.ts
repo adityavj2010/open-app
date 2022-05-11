@@ -11,7 +11,7 @@ import { Min, Max } from 'class-validator';
 import { Business } from '../../business/entities/business.entity';
 
 @Entity()
-@Unique(['bId', 'day', 'startTime', 'endTime'])
+@Unique(['bId', 'day'])
 export class BusinnessHour {
   @PrimaryGeneratedColumn()
   id: number;

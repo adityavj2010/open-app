@@ -72,8 +72,9 @@ export class AppController {
 
     for (let i = 0; i < body.businessHours.length; i++) {
       body.businessHours[i].bId = business;
-      await this.bussinessHours.create(body.businessHours[i]);
     }
+    await this.bussinessHours.create(body.businessHours);
+
     for (let i = 0; i < body.businessServices.length; i++) {
       body.businessServices[i].bId = business;
       await this.businessSerciceService.create(body.businessServices[i]);
@@ -84,7 +85,7 @@ export class AppController {
     }
     await this.mail.sendUserPassword(body.user.emailId, body.user.password);
 
-    return this.auth.login(await this.user.findOne(user));
+    return this.auth.login(await this.user.findOne(user), { bId: business });
   }
 
   @Post('sign-up')

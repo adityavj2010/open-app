@@ -58,8 +58,9 @@ export class AppointmentsService {
   }
 
   async getAvailableAppointmentsOfADay(date, bId) {
-    const startDate = date.setHours(0, 0, 0, 0);
-    const endDate = date.setHours(23, 59, 59, 0);
+    let startDate = new Date(date.setHours(0, 0, 0, 0));
+    let endDate = new Date(date.setHours(23, 59, 59, 0));
+    console.log('Look for date =', startDate);
     const bHours = await this.bHour.findAll({ bId: bId });
     const staff = await this.staff.findAll({
       bId: bId,
@@ -77,25 +78,65 @@ export class AppointmentsService {
     });
     const allAppointment = {};
     const day = startDate.getDay();
-    const bHour = bHours.find((obj) => obj.day === day);
+    const bHour = bHours.find((obj) => obj.day == day);
+    if (bHour == undefined) {
+      console.log('bHour', '[]');
+      return [];
+    }
     const startTime = bHour.startTime;
     const endTime = bHour.endTime;
-    this.appointmentRepository.find({});
-    for (; startTime < endTime; ) {}
+    startDate = setTime(startDate, startTime);
+    endDate = setTime(endDate, endTime);
+
+    const slots = {};
+    for (; startDate < endDate; ) {
+      slots[startDate.toString()] = [...staffIds];
+      startDate = addMinutes(startDate, 30);
+    }
+    let slotsArray: any = Object.entries(slots);
+    slotsArray = slotsArray.map((slot) => {
+      return {
+        time: slot[0],
+        availableStaff: slot[1],
+      };
+    });
+    return slotsArray;
   }
 
   async getAvailableAppointments(bId, startDate, endDate) {
-    const available = [];
-    const ed = moment(endDate);
-    const sd = moment(startDate);
-
-    const diff = ed.diff(sd, 'days');
+    const ed = new Date(endDate);
+    const sd = new Date(startDate);
+    const date1 = ed;
+    const date2 = sd;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const diffTime = Math.abs(date2 - date1);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const slots = [];
+    const diff = diffDays;
     for (let i = 0; i < diff; i++) {
       startDate = addDays(startDate, 1);
+      const slotsOfTheday = await this.getAvailableAppointmentsOfADay(
+        startDate,
+        bId,
+      );
+      for (let i = 0; i < slotsOfTheday.length; i++) {
+        slots.push(slotsOfTheday[i]);
+      }
     }
+    return slots;
   }
 }
 
+const setTime = function (dt, time) {
+  const [hr, min, sec] = time.split(':').map((value) => Number(value));
+  dt.setHours(hr, min, sec);
+  return new Date(dt);
+};
+
+const addMinutes = function (dt, minutes) {
+  return new Date(dt.getTime() + minutes * 60000);
+};
 function addDays(date, days) {
   const result = new Date(date);
   result.setDate(result.getDate() + days);

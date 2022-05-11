@@ -33,6 +33,28 @@ export class AppointmentsController {
   //   return this.appointmentsService.create(createAppointmentDto);
   // }
 
+  @Get('available')
+  getAvailableAppointments(
+    @Query('bId') bId,
+    @Query('startDate') startDate = new Date(),
+    @Query('endDate') endDate = null,
+  ) {
+    console.log({ bId, startDate, endDate });
+    if (!endDate) {
+      endDate = new Date();
+      endDate.setDate(startDate.getDate() + 7);
+    }
+    if (bId == null) {
+      throw new HttpException('Invalid Bid', HttpStatus.BAD_REQUEST);
+    }
+
+    return this.appointmentsService.getAvailableAppointments(
+      bId,
+      startDate,
+      endDate,
+    );
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.appointmentsService.findOne(+id);
@@ -106,27 +128,6 @@ export class AppointmentsController {
         ),
       },
     });
-  }
-
-  @Post('available')
-  getAvailableAppointments(
-    @Query('bId') bId,
-    @Query('startDate') startDate = new Date(),
-    @Query('endDate') endDate = null,
-  ) {
-    if (!endDate) {
-      endDate = new Date();
-      endDate.setDate(startDate.getDate() + 7);
-    }
-    if (bId == null) {
-      throw new HttpException('Invalid Bid', HttpStatus.BAD_REQUEST);
-    }
-
-    return this.appointmentsService.getAvailableAppointments(
-      bId,
-      startDate,
-      endDate,
-    );
   }
 }
 

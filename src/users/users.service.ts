@@ -108,12 +108,12 @@ export class UsersService {
     }
     const user = users[0];
 
-    const response = await this.auth.login(user);
     const businesses = await this.businessService.findAll({ uId: user.id });
     let business = {};
     if (businesses.length >= 1) {
       business = businesses[0];
     }
+    const response = await this.auth.login(user, { ...business });
     return { ...response, ...user, ...business };
   }
 }

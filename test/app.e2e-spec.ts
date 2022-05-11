@@ -60,6 +60,21 @@ const registerBussiness: RegisterBussiness = {
       endTime: '13:00:00',
       day: 3,
     },
+    {
+      startTime: '10:00:00',
+      endTime: '15:00:00',
+      day: 4,
+    },
+    {
+      startTime: '10:00:00',
+      endTime: '14:00:00',
+      day: 5,
+    },
+    {
+      startTime: '10:00:00',
+      endTime: '13:00:00',
+      day: 6,
+    },
   ],
 };
 
@@ -337,11 +352,13 @@ describe('Staff Testcases', () => {
       .send();
     expect(result.statusCode).toEqual(200);
     expect(result.body.length).toEqual(2);
+
     result = await request(app.getHttpServer())
       .get(`/business/${bId}/staff/${newStaffId}`)
       .set('Authorization', 'Bearer ' + token)
       .send();
     expect(result.statusCode).toEqual(200);
+
     expect(result.body.firstName).toEqual(updateStaff.firstName);
   });
 });
@@ -558,6 +575,16 @@ describe('User Testcases', () => {
       .send();
     expect(result.statusCode).toEqual(HttpStatus.OK);
     expect(result.body.length).toEqual(1);
+  });
+
+  it('Verify get available appointment', async () => {
+    const date = new Date();
+
+    const result = await request(app.getHttpServer())
+      .get(`/appointments/available?bId=${1}`)
+      .send();
+    expect(result.statusCode).toEqual(HttpStatus.OK);
+    console.log({ result: result.body });
   });
 });
 
