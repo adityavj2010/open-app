@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Column } from 'typeorm';
 
 export class CreateBusinnessHourDto {
   @ApiPropertyOptional()
@@ -12,4 +13,7 @@ export class CreateBusinnessHourDto {
 
   @ApiProperty()
   endTime: string;
+
+  @ApiPropertyOptional()
+  isWorking?: boolean;
 }

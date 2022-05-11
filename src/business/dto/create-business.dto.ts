@@ -34,10 +34,10 @@ export class CreateBusinessDto {
   image3?: string;
 
   @ApiPropertyOptional()
-  extraData1?: string;
+  lat?: string;
 
   @ApiPropertyOptional()
-  extraData2?: string;
+  long?: string;
 
   @ApiPropertyOptional()
   extraData3?: string;

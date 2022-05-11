@@ -480,7 +480,7 @@ describe('User Testcases', () => {
     const fivepm = new Date();
     const appointment: CreateAppointmentDto = {
       bId: business[0].bId,
-      bsId: bServices[0].id,
+
       staffId: staff[0].id,
       startDateTime: fivepm,
       uId: 1,
@@ -502,7 +502,7 @@ describe('User Testcases', () => {
     const nextDay = addDays(date, 1);
     const appointment: CreateAppointmentDto = {
       bId: business[0].bId,
-      bsId: bServices[0].id,
+
       staffId: staff[0].id,
       startDateTime: nextDay,
       uId: 1,
@@ -578,13 +578,52 @@ describe('User Testcases', () => {
   });
 
   it('Verify get available appointment', async () => {
-    const date = new Date();
-
-    const result = await request(app.getHttpServer())
+    let result = await request(app.getHttpServer())
       .get(`/appointments/available?bId=${1}`)
       .send();
     expect(result.statusCode).toEqual(HttpStatus.OK);
-    console.log({ result: result.body });
+    const initialResult = result.body;
+    if (initialResult.length == 0) {
+      console.log('No appointment issue');
+      return;
+    }
+    const appointment: CreateAppointmentDto = {
+      bId: business[0].bId,
+
+      staffId: initialResult[0].availableStaff[0],
+      startDateTime: initialResult[0].time,
+      uId: 1,
+      serviceId: bServices[0].id,
+      notes: 'Test',
+    };
+    result = await request(app.getHttpServer())
+      .post(`/appointments/book`)
+      .send(appointment);
+    expect(result.statusCode).toEqual(HttpStatus.CREATED);
+
+    result = await request(app.getHttpServer())
+      .get(`/appointments/available?bId=${1}`)
+      .send();
+    expect(result.statusCode).toEqual(HttpStatus.OK);
+    let nextResult = result.body;
+    let slot = nextResult.find((slot) => slot.time == initialResult[0].time);
+    expect(slot.availableStaff.length).toEqual(
+      initialResult[0].availableStaff.length - 1,
+    );
+
+    appointment.staffId = slot.availableStaff[0];
+    result = await request(app.getHttpServer())
+      .post(`/appointments/book`)
+      .send(appointment);
+    expect(result.statusCode).toEqual(HttpStatus.CREATED);
+
+    result = await request(app.getHttpServer())
+      .get(`/appointments/available?bId=${1}`)
+      .send();
+    expect(result.statusCode).toEqual(HttpStatus.OK);
+    nextResult = result.body;
+    slot = nextResult.find((slot) => slot.time == initialResult[0].time);
+    expect(slot).toBeUndefined();
   });
 });
 

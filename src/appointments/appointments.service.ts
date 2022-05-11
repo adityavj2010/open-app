@@ -8,6 +8,7 @@ import {
   LessThanOrEqual,
   MoreThanOrEqual,
   QueryFailedError,
+  Raw,
   Repository,
 } from 'typeorm';
 import { BusinnessHoursService } from '../businness-hours/businness-hours.service';
@@ -60,7 +61,6 @@ export class AppointmentsService {
   async getAvailableAppointmentsOfADay(date, bId) {
     let startDate = new Date(date.setHours(0, 0, 0, 0));
     let endDate = new Date(date.setHours(23, 59, 59, 0));
-    console.log('Look for date =', startDate);
     const bHours = await this.bHour.findAll({ bId: bId });
     const staff = await this.staff.findAll({
       bId: bId,
@@ -70,17 +70,25 @@ export class AppointmentsService {
       const staf = staff[i];
       staffIds.push(staf.id);
     }
-    const appointments = await this.appointmentRepository.find({
+
+    const appointments = await this.findAll({
       where: {
         bId: bId,
-        startDateTime: MoreThanOrEqual(startDate),
+        startDateTime: Raw(
+          (alias) => {
+            return `${alias} > :startDate and ${alias} < :endDate`;
+          },
+          {
+            startDate,
+            endDate,
+          },
+        ),
       },
     });
-    const allAppointment = {};
+
     const day = startDate.getDay();
     const bHour = bHours.find((obj) => obj.day == day);
     if (bHour == undefined) {
-      console.log('bHour', '[]');
       return [];
     }
     const startTime = bHour.startTime;
@@ -93,6 +101,19 @@ export class AppointmentsService {
       slots[startDate.toString()] = [...staffIds];
       startDate = addMinutes(startDate, 30);
     }
+    appointments.forEach((appointment) => {
+      const startDateTime = appointment.startDateTime.toString();
+
+      if (!slots[startDateTime]) {
+        return;
+      }
+      slots[startDateTime] = slots[startDateTime].filter((id) => {
+        return id != appointment.staffId;
+      });
+      if (slots[startDateTime].length == 0) {
+        delete slots[startDateTime];
+      }
+    });
     let slotsArray: any = Object.entries(slots);
     slotsArray = slotsArray.map((slot) => {
       return {

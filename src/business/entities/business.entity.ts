@@ -42,10 +42,10 @@ export class Business {
   image3: string;
 
   @Column({ default: '' })
-  extraData1: string;
+  lat: string;
 
   @Column({ default: '' })
-  extraData2: string;
+  long: string;
 
   @Column({ default: '' })
   extraData3: string;

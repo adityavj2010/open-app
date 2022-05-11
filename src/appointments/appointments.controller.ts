@@ -39,7 +39,6 @@ export class AppointmentsController {
     @Query('startDate') startDate = new Date(),
     @Query('endDate') endDate = null,
   ) {
-    console.log({ bId, startDate, endDate });
     if (!endDate) {
       endDate = new Date();
       endDate.setDate(startDate.getDate() + 7);
@@ -74,7 +73,7 @@ export class AppointmentsController {
   }
 
   @Post('book')
-  bookAppointment(@Body() createAppointmentDto) {
+  bookAppointment(@Body() createAppointmentDto: CreateAppointmentDto) {
     return this.appointmentsService.create(createAppointmentDto);
   }
 
@@ -115,10 +114,6 @@ export class AppointmentsController {
         bId: bId,
         startDateTime: Raw(
           (alias) => {
-            console.log(
-              'Query',
-              `${alias} > :startDate and ${alias} < :endDate`,
-            );
             return `${alias} > :startDate and ${alias} < :endDate`;
           },
           {

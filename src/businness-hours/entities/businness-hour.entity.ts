@@ -30,4 +30,7 @@ export class BusinnessHour {
 
   @Column({ type: 'time', nullable: false })
   endTime: string;
+
+  @Column({ type: 'boolean', default: false })
+  isWorking: boolean;
 }
