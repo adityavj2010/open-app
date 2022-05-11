@@ -25,6 +25,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
 import { ContextMiddleware } from '../middleware/context.middleware';
+import { Slot } from './appointments/entities/slot.entity';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { ContextMiddleware } from '../middleware/context.middleware';
         BusinnessHour,
         BusinessService,
         Appointment,
+        Slot,
       ],
       synchronize: true,
       keepConnectionAlive: true,

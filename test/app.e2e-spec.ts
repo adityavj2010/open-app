@@ -34,14 +34,14 @@ const registerBussiness: RegisterBussiness = {
   ],
   businessServices: [
     {
+      serviceName: 'Beard shaping',
+      cost: 10,
+      time: 90,
+    },
+    {
       serviceName: 'Hair cut',
       cost: 20,
       time: 30,
-    },
-    {
-      serviceName: 'Beard shaping',
-      cost: 10,
-      time: 20,
     },
   ],
   businessHours: [
@@ -461,19 +461,19 @@ describe('User Testcases', () => {
     bId = result.body.bId;
     business = await request(app.getHttpServer()).get(`/business`).send();
     business = business.body;
-    console.log({ business: business });
+    // console.log({ business: business });
 
     const firstBid = business[0].bId;
     bServices = await request(app.getHttpServer())
       .get(`/business-services?bId=${firstBid}`)
       .send();
     bServices = bServices.body;
-    console.log({ bServices });
+    // console.log({ bServices });
     staff = await request(app.getHttpServer())
       .get(`/staffs?bId=${firstBid}`)
       .send();
     staff = staff.body;
-    console.log({ staff });
+    // console.log({ staff });
   });
 
   it('check book appointment', async () => {
@@ -526,13 +526,13 @@ describe('User Testcases', () => {
       .get(`/appointments?bId=${business[0].bId}`)
       .send();
     expect(result.statusCode).toEqual(HttpStatus.OK);
-    expect(result.body.length).toEqual(3);
+    expect(result.body.length).toEqual(9);
 
     result = await request(app.getHttpServer())
       .get(`/appointments?bId=${business[0].bId}&startDate=${new Date()}`)
       .send();
     expect(result.statusCode).toEqual(HttpStatus.OK);
-    expect(result.body.length).toEqual(3);
+    expect(result.body.length).toEqual(9);
 
     result = await request(app.getHttpServer())
       .get(`/appointments?bId=${business[0].bId + 1}`)
@@ -546,7 +546,7 @@ describe('User Testcases', () => {
       )
       .send();
     expect(result.statusCode).toEqual(HttpStatus.OK);
-    expect(result.body.length).toEqual(2);
+    expect(result.body.length).toEqual(6);
 
     result = await request(app.getHttpServer())
       .get(
@@ -554,7 +554,7 @@ describe('User Testcases', () => {
       )
       .send();
     expect(result.statusCode).toEqual(HttpStatus.OK);
-    expect(result.body.length).toEqual(2);
+    expect(result.body.length).toEqual(6);
 
     result = await request(app.getHttpServer())
       .get(
@@ -564,7 +564,7 @@ describe('User Testcases', () => {
       )
       .send();
     expect(result.statusCode).toEqual(HttpStatus.OK);
-    expect(result.body.length).toEqual(1);
+    expect(result.body.length).toEqual(3);
 
     result = await request(app.getHttpServer())
       .get(
@@ -574,7 +574,7 @@ describe('User Testcases', () => {
       )
       .send();
     expect(result.statusCode).toEqual(HttpStatus.OK);
-    expect(result.body.length).toEqual(1);
+    expect(result.body.length).toEqual(3);
   });
 
   it('Verify get available appointment', async () => {
@@ -624,6 +624,118 @@ describe('User Testcases', () => {
     nextResult = result.body;
     slot = nextResult.find((slot) => slot.time == initialResult[0].time);
     expect(slot).toBeUndefined();
+  });
+  it('Verify get multi slot available appointment', async () => {
+    let result = await request(app.getHttpServer())
+      .get(`/appointments?bId=${business[0].bId}`)
+      .send();
+    // console.log('result', result.body);
+    const slots = {};
+    result.body.forEach((body) => {
+      slots[body.slotId] = true;
+    });
+    const slotIds = Object.keys(slots);
+    const appointments = [];
+    for (let i = 0; i < slotIds.length; i++) {
+      const app = result.body.find((body) => body.slotId == slotIds[i]);
+      appointments.push(app);
+    }
+    for (let i = 0; i < appointments.length; i++) {
+      result = await request(app.getHttpServer())
+        .delete(`/appointments/${appointments[i].appId}`)
+        .send();
+
+      expect(result.statusCode).toEqual(HttpStatus.OK);
+    }
+
+    result = await request(app.getHttpServer())
+      .get(`/appointments?bId=${business[0].bId}`)
+      .send();
+    expect(result.statusCode).toEqual(HttpStatus.OK);
+    expect(result.body.length).toEqual(0);
+  });
+  it('Verify  single slot get available appointment', async () => {
+    const fivepm = new Date();
+    const appointment: CreateAppointmentDto = {
+      bId: business[0].bId,
+
+      staffId: staff[0].id,
+      startDateTime: fivepm,
+      uId: 1,
+      serviceId: bServices[1].id,
+      notes: 'Test',
+    };
+    let result = await request(app.getHttpServer())
+      .post('/appointments/book')
+      .send(appointment);
+    expect(result.statusCode).toEqual(HttpStatus.CREATED);
+    result = await request(app.getHttpServer())
+      .get(`/appointments?bId=${business[0].bId}`)
+      .send();
+    expect(result.statusCode).toEqual(HttpStatus.OK);
+    expect(result.body.length).toEqual(1);
+    const appointments = result.body;
+    result = await request(app.getHttpServer())
+      .delete(`/appointments/${appointments[0].appId}`)
+      .send();
+
+    expect(result.statusCode).toEqual(HttpStatus.OK);
+
+    result = await request(app.getHttpServer())
+      .get(`/appointments?bId=${business[0].bId}`)
+      .send();
+    expect(result.statusCode).toEqual(HttpStatus.OK);
+    expect(result.body.length).toEqual(0);
+  });
+
+  it('Verify  update appointment', async () => {
+    const fivepm = new Date();
+    const appointment: CreateAppointmentDto = {
+      bId: business[0].bId,
+
+      staffId: staff[0].id,
+      startDateTime: fivepm,
+      uId: 1,
+      serviceId: bServices[0].id,
+      notes: 'Test',
+    };
+    let result = await request(app.getHttpServer())
+      .post('/appointments/book')
+      .send(appointment);
+    expect(result.statusCode).toEqual(HttpStatus.CREATED);
+    result = await request(app.getHttpServer())
+      .get(`/appointments?bId=${business[0].bId}`)
+      .send();
+    expect(result.statusCode).toEqual(HttpStatus.OK);
+    expect(result.body.length).toEqual(3);
+    let res_appointment = result.body[0];
+
+    expect(res_appointment.notes).toEqual('Test');
+    console.log({ res_appointment });
+    result = await request(app.getHttpServer())
+      .patch(`/appointments/${res_appointment.appId}`)
+      .send({ notes: 'test2' });
+    expect(result.statusCode).toEqual(HttpStatus.OK);
+
+    result = await request(app.getHttpServer())
+      .get(`/appointments?bId=${business[0].bId}`)
+      .send();
+    expect(result.statusCode).toEqual(HttpStatus.OK);
+    expect(result.body.length).toEqual(3);
+    res_appointment = result.body[0];
+
+    expect(res_appointment.notes).toEqual('test2');
+    // expect(res_appointment.startDateTime).toEqual(fivepm);
+    // bId: business[0].bId,
+    //
+    //   staffId: staff[0].id,
+    //   startDateTime: fivepm,
+    //   uId: 1,
+    //   serviceId: bServices[0].id,
+    expect(res_appointment.bId).toEqual(business[0].bId);
+    expect(res_appointment.staffId).toEqual(staff[0].id);
+    expect(res_appointment.uId).toEqual(1);
+    expect(res_appointment.serviceId).toEqual(bServices[0].id);
   });
 });
 

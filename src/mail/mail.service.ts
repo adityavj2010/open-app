@@ -23,10 +23,11 @@ export class MailService {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     } catch (e) {
-      throw new HttpException(
-        ERRORS.EMAIL_SENDING_FAILURE,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      return true;
+      // throw new HttpException(
+      //   ERRORS.EMAIL_SENDING_FAILURE,
+      //   HttpStatus.INTERNAL_SERVER_ERROR,
+      // );
     }
   }
 

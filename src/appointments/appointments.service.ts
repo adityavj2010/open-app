@@ -16,6 +16,8 @@ import { StaffsModule } from '../staffs/staffs.module';
 import { StaffsService } from '../staffs/staffs.service';
 import moment from 'moment';
 import { ERRORS } from '../misc/errors';
+import { Slot } from './entities/slot.entity';
+import { BusinessServicesService } from '../business-services/business-services.service';
 
 @Injectable()
 export class AppointmentsService {
@@ -24,10 +26,37 @@ export class AppointmentsService {
     private appointmentRepository: Repository<Appointment>,
     private bHour: BusinnessHoursService,
     private staff: StaffsService,
+    @InjectRepository(Slot)
+    private slotRepository: Repository<Slot>,
+    private businesServicesService: BusinessServicesService,
   ) {}
   async create(createAppointmentDto: CreateAppointmentDto) {
     try {
-      return await this.appointmentRepository.save(createAppointmentDto);
+      const slot = await this.slotRepository.save({
+        notes: createAppointmentDto.notes,
+      });
+      const bService = await this.businesServicesService.findOne(
+        createAppointmentDto.serviceId,
+      );
+      const slotsToAdd = bService.time / 30;
+      // console.warn({ slotsToAdd });
+      let lastSlot;
+      createAppointmentDto['slotId'] = slot.slotId;
+      for (let i = 0; i < slotsToAdd; i++) {
+        // console.log(i, slotsToAdd, 'Inserting ', createAppointmentDto);
+        delete createAppointmentDto['appId'];
+        if (!lastSlot) {
+          lastSlot = await this.appointmentRepository.save(
+            createAppointmentDto,
+          );
+        } else {
+          await this.appointmentRepository.save(createAppointmentDto);
+        }
+        createAppointmentDto.startDateTime = new Date(
+          addMinutes(new Date(createAppointmentDto.startDateTime), 30),
+        );
+      }
+      return lastSlot;
     } catch (e) {
       if (e instanceof QueryFailedError) {
         if (e['code'] == 'ER_DUP_ENTRY') {
@@ -42,20 +71,55 @@ export class AppointmentsService {
     }
   }
 
-  findAll(query: FindManyOptions) {
-    return this.appointmentRepository.find(query);
+  async findAll(query: FindManyOptions) {
+    let apps = await this.appointmentRepository.find(query);
+    apps = await Promise.all(
+      apps.map(async (app) => {
+        const slot = await this.slotRepository.findOne(app.slotId);
+        app['notes'] = slot.notes;
+        return app;
+      }),
+    );
+    return apps;
   }
 
   findOne(id: number) {
-    return this.appointmentRepository.findOne(id);
+    return this.appointmentRepository.findOne(id).then((app) => {
+      if (app) {
+        return this.slotRepository.findOne(app.slotId).then((slot) => {
+          app['notes'] = slot.notes;
+          return app;
+        });
+      }
+      return app;
+    });
   }
 
-  update(id: number, updateAppointmentDto: UpdateAppointmentDto) {
+  async update(id: number, updateAppointmentDto: UpdateAppointmentDto) {
+    console.log('update ID', id);
+    if (updateAppointmentDto.notes) {
+      const app = await this.findOne(id);
+      console.log('app ID', app);
+      await this.slotRepository.update(app.slotId, {
+        notes: updateAppointmentDto.notes,
+      });
+      delete updateAppointmentDto.notes;
+    }
+    if (Object.keys(updateAppointmentDto).length == 0) {
+      return 'Updated';
+    }
     return this.appointmentRepository.update(id, updateAppointmentDto);
   }
 
-  remove(id: number) {
-    return this.appointmentRepository.delete(id);
+  async remove(id: number) {
+    console.log('ID', id);
+    const appointment = await this.findOne(id);
+    if (!appointment.slotId) {
+      return new HttpException('Invalid slot id', HttpStatus.BAD_REQUEST);
+    }
+    const slotId = appointment.slotId;
+    await this.appointmentRepository.delete({ slotId: appointment.slotId });
+    await this.slotRepository.delete(slotId);
   }
 
   async getAvailableAppointmentsOfADay(date, bId) {

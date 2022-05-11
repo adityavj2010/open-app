@@ -28,6 +28,6 @@ export class Appointment {
   @Column({ nullable: false })
   startDateTime: Date;
 
-  @Column({ default: '' })
-  notes: string;
+  @Column({ nullable: false })
+  slotId: number;
 }

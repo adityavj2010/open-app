@@ -108,7 +108,6 @@ export class AppointmentsController {
       endDate.setDate(startDate.getDate() + 30);
       endDate = new Date(endDate);
     }
-    console.log({ startDate, endDate, flag });
     return this.appointmentsService.findAll({
       where: {
         bId: bId,

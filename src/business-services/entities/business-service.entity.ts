@@ -23,8 +23,8 @@ export class BusinessService {
   serviceName: string;
 
   @Column({ nullable: false })
-  @Min(1)
-  @Max(60)
+  @Min(30)
+  @Max(30 * 6)
   time: number;
 
   @Column({ nullable: false })
