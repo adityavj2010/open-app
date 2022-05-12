@@ -58,9 +58,14 @@ export class AppController {
     type: Response,
   })
   async businessSignUp(@Body() body: RegisterBussiness) {
-    // body.user.password = Math.random().toString(36).slice(-8);
-    body.user.password = 'password';
+    body.user.password = Math.random().toString(36).slice(-8);
+    // body.user.password = 'password';
     const user = await this.userService.signUp(body.user);
+    await this.mail
+      .sendUserPassword(body.user.emailId, body.user.password)
+      .then(console.log)
+      .catch(console.error);
+
     this.logger.log(
       `Create user with ${body.user.emailId} with user id ${user} `,
     );
@@ -83,7 +88,6 @@ export class AppController {
       body.staff[i].bId = business;
       await this.staffs.create(body.staff[i]);
     }
-    await this.mail.sendUserPassword(body.user.emailId, body.user.password);
 
     return this.auth.login(await this.user.findOne(user), { bId: business });
   }

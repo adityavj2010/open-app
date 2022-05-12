@@ -11,12 +11,14 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
       // or
 
       transport: {
-        host: 'smtp.ethereal.email',
+        host: 'smtp.mail.yahoo.com',
         port: 587,
+
         auth: {
-          user: 'lilyan.kub11@ethereal.email',
-          pass: 'fqSAZ1tqSuHHsWQazK',
+          user: 'openapp123@yahoo.com',
+          pass: 'echhiljmgwoxbtlp',
         },
+        from: '',
       },
       template: {
         dir: join(__dirname, 'templates'),

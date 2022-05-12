@@ -11,23 +11,27 @@ export class MailService {
     const html = `<p>Use this password to login = ${password}</p>`;
     try {
       const result = await this.sendUserConfirmation({
+        from: 'openapp123@yahoo.com',
         to: emailId,
         subject: 'OpenApp password',
         html: html,
       });
+      console.log({ result });
+
       if (result) {
         return true;
       }
+
       throw new HttpException(
         ERRORS.EMAIL_SENDING_FAILURE,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     } catch (e) {
-      return true;
-      // throw new HttpException(
-      //   ERRORS.EMAIL_SENDING_FAILURE,
-      //   HttpStatus.INTERNAL_SERVER_ERROR,
-      // );
+      console.error('error', e.message);
+      throw new HttpException(
+        ERRORS.EMAIL_SENDING_FAILURE,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
