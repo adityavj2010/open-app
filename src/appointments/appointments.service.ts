@@ -214,6 +214,7 @@ export class AppointmentsService {
 }
 
 function addHours(date, hours) {
+  date = new Date(date);
   date.setHours(date.getHours() + hours);
 
   return new Date(date);
