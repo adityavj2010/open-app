@@ -114,15 +114,15 @@ export class AppController {
     return this.userService.signIn(body);
   }
 
-  @Post('request-temp-password/:userId')
+  @Post('request-temp-password/:emailId')
   @ApiOperation({ summary: 'Requests a temporary password of a user' })
   @ApiResponse({
     status: 201,
     description: 'Return userId of created user',
     type: Number,
   })
-  requestTempPassword(@Param('userId') userId: number): Promise<string> {
-    return this.userService.requestTempPassword(userId);
+  requestTempPassword(@Param('emailId') emailId: string): Promise<string> {
+    return this.userService.requestTempPassword(emailId);
   }
 
   @UseInterceptors(

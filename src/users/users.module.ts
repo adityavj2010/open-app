@@ -6,6 +6,7 @@ import { User } from './entities/user.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthModule } from '../auth/auth.module';
 import { BusinessModule } from '../business/business.module';
+import { MailModule } from '../mail/mail.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { BusinessModule } from '../business/business.module';
     }),
     forwardRef(() => AuthModule),
     forwardRef(() => BusinessModule),
+    MailModule,
   ],
   controllers: [UsersController],
   providers: [UsersService, UsersController],

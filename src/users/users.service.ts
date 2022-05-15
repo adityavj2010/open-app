@@ -15,6 +15,7 @@ import { ERRORS } from '../misc/errors';
 import { JwtService } from '@nestjs/jwt';
 import { AuthService } from '../auth/auth.service';
 import { BusinessService } from '../business/business.service';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class UsersService {
@@ -24,6 +25,7 @@ export class UsersService {
     @Inject(forwardRef(() => AuthService))
     private auth: AuthService,
     private businessService: BusinessService,
+    private mailService: MailService,
   ) {}
 
   create(createUserDto: CreateUserDto) {
@@ -36,9 +38,10 @@ export class UsersService {
 
   async findOneByEmail(email): Promise<User> {
     const users = await this.usersRepository.find({ emailId: email });
-    if (users.length != 0) {
+
+    if (users.length == 0) {
       throw new HttpException(
-        'Duplicate entries found',
+        'No user found with emailid ' + email,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -70,15 +73,16 @@ export class UsersService {
     });
   }
 
-  async requestTempPassword(userId: number) {
-    const user = await this.findOne(userId);
+  async requestTempPassword(emailId: string) {
+    const user = await this.findOneByEmail(emailId);
+    const userId = user.id;
     if (user == null) {
       throw new HttpException(ERRORS.USER_NOT_FOUND, HttpStatus.BAD_REQUEST);
     }
     const randomText = Math.random().toString(36).slice(-8);
     try {
       await this.usersRepository.update(userId, { tempPassword: randomText });
-      //TODO Add send mail logic
+      await this.mailService.sendUserPassword(emailId, randomText);
     } catch (e) {
       throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
     }

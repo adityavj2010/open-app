@@ -1,4 +1,11 @@
-import { HttpException, HttpStatus, Injectable, Query } from '@nestjs/common';
+import {
+  forwardRef,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  Query,
+} from '@nestjs/common';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
 import { Appointment } from './entities/appointment.entity';
@@ -18,6 +25,8 @@ import moment from 'moment';
 import { ERRORS } from '../misc/errors';
 import { Slot } from './entities/slot.entity';
 import { BusinessServicesService } from '../business-services/business-services.service';
+import { UsersService } from '../users/users.service';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class AppointmentsService {
@@ -29,6 +38,8 @@ export class AppointmentsService {
     @InjectRepository(Slot)
     private slotRepository: Repository<Slot>,
     private businesServicesService: BusinessServicesService,
+    @Inject(forwardRef(() => UsersService))
+    private userService: UsersService,
   ) {}
   async create(createAppointmentDto: CreateAppointmentDto) {
     try {
@@ -76,6 +87,10 @@ export class AppointmentsService {
     apps = await Promise.all(
       apps.map(async (app) => {
         const slot = await this.slotRepository.findOne(app.slotId);
+        const user = await this.userService.findOne(app.uId);
+        if (user && app) {
+          app = { ...app, ...user };
+        }
         app['notes'] = slot.notes;
         return app;
       }),
@@ -87,8 +102,14 @@ export class AppointmentsService {
     return this.appointmentRepository.findOne(id).then((app) => {
       if (app) {
         return this.slotRepository.findOne(app.slotId).then((slot) => {
-          app['notes'] = slot.notes;
-          return app;
+          return this.userService.findOne(app.uId).then((user) => {
+            if (user && app) {
+              app = { ...app, ...user };
+            }
+
+            app['notes'] = slot.notes;
+            return app;
+          });
         });
       }
       return app;

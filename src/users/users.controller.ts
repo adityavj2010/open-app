@@ -41,7 +41,7 @@ export class UsersController {
   // }
   //
   @Patch(':id')
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
     @Req() req,
@@ -68,8 +68,8 @@ export class UsersController {
     return this.usersService.signUp(user);
   }
 
-  async requestTempPassword(userId: number) {
-    return this.usersService.requestTempPassword(userId);
+  async requestTempPassword(emailId: string) {
+    return this.usersService.requestTempPassword(emailId);
   }
 
   async signIn(body: SignInDto) {
