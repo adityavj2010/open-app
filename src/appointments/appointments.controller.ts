@@ -79,14 +79,16 @@ export class AppointmentsController {
 
   @Get()
   async findAll(
-    @Query('bId') bId,
+    @Query('bId') bId: number,
     @Query('startDate') startDate = null,
     @Query('endDate') endDate = null,
-    @Query('uId') uId,
-    @Query('staffId') staffId,
-    @Query('serviceId') serviceId,
+    @Query('uId') uId: number,
+    @Query('staffId') staffId: number,
+    @Query('serviceId') serviceId: number,
   ) {
     let flag = false;
+    const searchParams = {};
+
     if (startDate) {
       startDate = new Date(startDate);
       // startDate = new Date(
@@ -94,14 +96,14 @@ export class AppointmentsController {
       //   startDate.getMonth(),
       //   startDate.getDate(),
       // );
-
+      startDate = subtractHours(startDate, 4);
+      searchParams['startDateTime'] = MoreThan(startDate);
       flag = true;
     } else {
       // const date = new Date();
       // startDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
       startDate = new Date();
     }
-    startDate = subtractHours(startDate, 4);
 
     if (endDate) {
       endDate = new Date(endDate);
@@ -111,8 +113,15 @@ export class AppointmentsController {
       endDate.setDate(startDate.getDate() + 30);
       endDate = new Date(endDate);
     }
-    const searchParams = {};
-
+    // const startDateTime = Raw(
+    //   (alias) => {
+    //     return `${alias} > :startDate and ${alias} < :endDate`;
+    //   },
+    //   {
+    //     startDate,
+    //     endDate,
+    //   },
+    // );
     if (uId) {
       searchParams['uId'] = uId;
     }
@@ -122,19 +131,10 @@ export class AppointmentsController {
     if (staffId) {
       searchParams['staffId'] = staffId;
     }
+
+    // console.log({ searchParams });
     return this.appointmentsService.findAll({
       ...searchParams,
-      where: {
-        startDateTime: Raw(
-          (alias) => {
-            return `${alias} > :startDate and ${alias} < :endDate`;
-          },
-          {
-            startDate,
-            endDate,
-          },
-        ),
-      },
     });
   }
 }
