@@ -7,10 +7,37 @@ import { ERRORS } from '../misc/errors';
 export class MailService {
   constructor(private mailerService: MailerService) {}
 
+  async sendEmail(emailId, subject, content) {
+    const html = `<p>${content}</p>`;
+    try {
+      const result = await this.mailerService.sendMail({
+        from: 'openapp123@yahoo.com',
+        to: emailId,
+        subject: subject,
+        html: html,
+      });
+
+      if (result) {
+        return true;
+      }
+
+      throw new HttpException(
+        ERRORS.EMAIL_SENDING_FAILURE,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    } catch (e) {
+      console.error('error', e.message);
+      throw new HttpException(
+        ERRORS.EMAIL_SENDING_FAILURE,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   async sendUserPassword(emailId: string, password: string): Promise<boolean> {
     const html = `<p>Use this password to login = ${password}</p>`;
     try {
-      const result = await this.sendUserConfirmation({
+      const result = await this.mailerService.sendMail({
         from: 'openapp123@yahoo.com',
         to: emailId,
         subject: 'OpenApp password',
@@ -33,11 +60,5 @@ export class MailService {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
-  }
-
-  async sendUserConfirmation(sendEmailOptions: any): Promise<boolean> {
-    return this.mailerService.sendMail(sendEmailOptions).then(() => {
-      return true;
-    });
   }
 }

@@ -140,7 +140,7 @@ export class AppointmentsController {
 }
 
 function subtractHours(date, hours) {
-  date.setHours(date.getHours() - hours);
+  // date.setHours(date.getHours() - hours);
 
   return new Date(date);
 }

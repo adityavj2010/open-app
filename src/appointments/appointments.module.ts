@@ -9,6 +9,7 @@ import { Slot } from './entities/slot.entity';
 import { BusinessServicesModule } from '../business-services/business-services.module';
 import { UsersModule } from '../users/users.module';
 import { BusinessModule } from '../business/business.module';
+import { MailModule } from '../mail/mail.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { BusinessModule } from '../business/business.module';
     StaffsModule,
     BusinessServicesModule,
     forwardRef(() => UsersModule),
+    MailModule,
   ],
 
   controllers: [AppointmentsController],

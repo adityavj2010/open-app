@@ -12,7 +12,7 @@ import { AppointmentsModule } from '../appointments/appointments.module';
     TypeOrmModule.forFeature([Business]),
     StaffsModule,
     forwardRef(() => UsersModule),
-    AppointmentsModule,
+    forwardRef(() => AppointmentsModule),
   ],
   controllers: [BusinessController],
   providers: [BusinessService, BusinessController],

@@ -27,6 +27,7 @@ import { Slot } from './entities/slot.entity';
 import { BusinessServicesService } from '../business-services/business-services.service';
 import { UsersService } from '../users/users.service';
 import { AuthService } from '../auth/auth.service';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class AppointmentsService {
@@ -40,6 +41,7 @@ export class AppointmentsService {
     private businesServicesService: BusinessServicesService,
     @Inject(forwardRef(() => UsersService))
     private userService: UsersService,
+    private mailService: MailService,
   ) {}
   async create(createAppointmentDto: CreateAppointmentDto) {
     try {
@@ -235,8 +237,8 @@ export class AppointmentsService {
 }
 
 function addHours(date, hours) {
-  date = new Date(date);
-  date.setHours(date.getHours() + hours);
+  // date = new Date(date);
+  // date.setHours(date.getHours() + hours);
 
   return new Date(date);
 }
