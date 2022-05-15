@@ -181,7 +181,7 @@ export class AppointmentsService {
     let slotsArray: any = Object.entries(slots);
     slotsArray = slotsArray.map((slot) => {
       return {
-        time: slot[0],
+        time: addHours(slot[0], 4),
         availableStaff: slot[1],
       };
     });
@@ -211,6 +211,12 @@ export class AppointmentsService {
     }
     return slots;
   }
+}
+
+function addHours(date, hours) {
+  date.setHours(date.getHours() + hours);
+
+  return new Date(date);
 }
 
 const setTime = function (dt, time) {

@@ -82,6 +82,9 @@ export class AppointmentsController {
     @Query('bId') bId,
     @Query('startDate') startDate = null,
     @Query('endDate') endDate = null,
+    @Query('uId') uId,
+    @Query('staffId') staffId,
+    @Query('serviceId') serviceId,
   ) {
     let flag = false;
     if (startDate) {
@@ -108,9 +111,20 @@ export class AppointmentsController {
       endDate.setDate(startDate.getDate() + 30);
       endDate = new Date(endDate);
     }
+    const searchParams = {};
+
+    if (uId) {
+      searchParams['uId'] = uId;
+    }
+    if (bId) {
+      searchParams['bId'] = bId;
+    }
+    if (staffId) {
+      searchParams['staffId'] = staffId;
+    }
     return this.appointmentsService.findAll({
+      ...searchParams,
       where: {
-        bId: bId,
         startDateTime: Raw(
           (alias) => {
             return `${alias} > :startDate and ${alias} < :endDate`;
