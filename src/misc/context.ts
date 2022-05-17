@@ -11,8 +11,8 @@ export function GetContext(request): Context {
   const customContext = request.raw?.customContext
     ? request?.raw?.customContext
     : request.customContext;
-  ctx['emailId'] = customContext.emailId;
-  ctx['id'] = customContext.id;
+  ctx['emailId'] = customContext?.emailId;
+  ctx['id'] = customContext?.id;
   return ctx;
 }
 export function SetContext(request, token) {

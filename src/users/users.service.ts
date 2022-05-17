@@ -53,9 +53,7 @@ export class UsersService {
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
-    return this.usersRepository.update(id, updateUserDto).then(() => {
-      return 'Updated';
-    });
+    return this.usersRepository.update(id, updateUserDto);
   }
 
   remove(id: number) {

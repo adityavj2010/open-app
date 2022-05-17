@@ -10,6 +10,7 @@ import {
   HttpStatus,
   Req,
   UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto, SignInDto } from './dto/create-user.dto';
@@ -19,6 +20,7 @@ import { BusinessService } from '../business/business.service';
 import { ERRORS } from '../misc/errors';
 import { User } from './entities/user.entity';
 import { GetContext } from '../misc/context';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('Users')
 @Controller('users')
