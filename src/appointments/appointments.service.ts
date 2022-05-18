@@ -288,6 +288,7 @@ function addHours(date, hours) {
 const setTime = function (dt, time) {
   const [hr, min, sec] = time.split(':').map((value) => Number(value));
   dt.setHours(hr, min, sec);
+  dt.setTime(dt.getTime() + 4 * 60 * 60 * 1000);
   return new Date(dt);
 };
 
