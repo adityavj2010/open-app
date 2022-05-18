@@ -1,8 +1,17 @@
 # Open App Backend
 
-## Description
+[//]: # (## Description)
+### Framework
 
-Node based backend built using nest js framework.
+We have completed the backend using nest framework
+
+Docs:- https://docs.nestjs.com/
+
+### Environment 
+
+This application required mysql backend, smtp mail and one single port to run the application.
+
+To configure the application goto env.ts 
 
 ## Installation
 
@@ -23,6 +32,15 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
+## Deploying using docker
+
+```bash
+# First time setup
+$ sh install.sh
+
+# code only update
+$ sh update-backend.sh
+```
 ## Test
 
 ```bash
@@ -35,6 +53,22 @@ $ npm run test:e2e
 # test coverage
 $ npm run test:cov
 ```
+
+## Architecture
+
+This application follows a restful architecture.
+
+We have divided the backend in following separate application logic:-
+1. Users
+2. Staff
+3. Business hours
+4. Business services
+5. Appointments
+
+## APIs
+
+We have implemented swagger api manager.
+To view api's goto URL:PORT/swagger
 
 ## Support
 

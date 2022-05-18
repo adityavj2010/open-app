@@ -26,6 +26,7 @@ import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
 import { ContextMiddleware } from '../middleware/context.middleware';
 import { Slot } from './appointments/entities/slot.entity';
+import { env } from '../env';
 
 @Module({
   imports: [
@@ -40,11 +41,11 @@ import { Slot } from './appointments/entities/slot.entity';
     }),
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: process.env.DATABASE_URL ? process.env.DATABASE_URL : 'localhost',
-      port: 3306,
-      username: 'root',
-      password: 'password',
-      database: 'openapp',
+      host: process.env.DATABASE_URL ? process.env.DATABASE_URL : env.db.host,
+      port: env.db.port,
+      username: env.db.username,
+      password: env.db.password,
+      database: env.db.database,
       entities: [
         User,
         Business,

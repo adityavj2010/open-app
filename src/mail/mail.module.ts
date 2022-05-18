@@ -3,20 +3,18 @@ import { MailService } from './mail.service';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { join } from 'path';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import { env } from '../../env';
 
 @Module({
   imports: [
     MailerModule.forRoot({
-      // transport: 'smtps://user@example.com:topsecret@smtp.example.com',
-      // or
-
       transport: {
-        host: 'smtp.mail.yahoo.com',
-        port: 587,
+        host: env.mail.host,
+        port: env.mail.port,
 
         auth: {
-          user: 'openapp123@yahoo.com',
-          pass: 'echhiljmgwoxbtlp',
+          user: env.mail.auth.user,
+          pass: env.mail.auth.pass,
         },
         from: '',
       },

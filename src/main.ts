@@ -6,6 +6,7 @@ import { logger } from './misc/logger';
 import { ValidationPipe } from '@nestjs/common';
 import { FastifyStaticOptions } from '@nestjs/platform-fastify/interfaces/external';
 import { JwtService } from '@nestjs/jwt';
+import { env } from '../env';
 
 async function bootstrap() {
   const options = {
@@ -26,7 +27,7 @@ async function bootstrap() {
       transform: true,
     }),
   );
-  await app.listen(3000, '0.0.0.0');
+  await app.listen(env.app_port, '0.0.0.0');
 }
 bootstrap().catch((e) => {
   console.error('Error caught in bootstrap', e);
