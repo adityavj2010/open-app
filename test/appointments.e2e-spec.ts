@@ -137,6 +137,12 @@ describe('Sign up', () => {
       .send(appointment);
     console.log('result', result.body);
     expect(result.statusCode).toEqual(HttpStatus.CREATED);
+
+    const result2 = await request(app.getHttpServer())
+      .delete('/appointments/' + result.body.appId)
+      .send();
+    console.log('result', result2.body);
+    expect(result2.statusCode).toEqual(HttpStatus.OK);
   });
 });
 

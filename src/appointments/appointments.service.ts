@@ -27,7 +27,8 @@ import { Slot } from './entities/slot.entity';
 import { BusinessServicesService } from '../business-services/business-services.service';
 import { UsersService } from '../users/users.service';
 import { AuthService } from '../auth/auth.service';
-import { MailService } from '../mail/mail.service';
+import { EmailCtx, MailService } from '../mail/mail.service';
+import { BusinessService } from '../business/business.service';
 
 @Injectable()
 export class AppointmentsService {
@@ -41,6 +42,8 @@ export class AppointmentsService {
     private businesServicesService: BusinessServicesService,
     @Inject(forwardRef(() => UsersService))
     private userService: UsersService,
+    @Inject(forwardRef(() => BusinessService))
+    private businessService: BusinessService,
     private mailService: MailService,
   ) {}
   async create(createAppointmentDto: CreateAppointmentDto) {
@@ -69,6 +72,27 @@ export class AppointmentsService {
           addMinutes(new Date(createAppointmentDto.startDateTime), 30),
         );
       }
+      const business = await this.businessService.findOne(
+        createAppointmentDto.bId,
+      );
+      const bOwner = await this.userService.findOne(business.uId);
+      const customer = await this.userService.findOne(createAppointmentDto.uId);
+      console.log({ lastSlot });
+      const staff = await this.staff.findOne(createAppointmentDto.staffId);
+      const ctx: EmailCtx = {
+        staffName: staff.firstName,
+        businessName: business.bName,
+        appNumber: lastSlot.appId,
+        dateTime: createAppointmentDto.startDateTime,
+        customerName: customer.firstName,
+      };
+      this.mailService
+        .sendCustomerAppoitmentConfirmation(customer.emailId, ctx)
+        .then(console.log);
+      this.mailService
+        .sendBusinessAppoitmentConfirmation(bOwner.emailId, ctx)
+        .then(console.log);
+
       return lastSlot;
     } catch (e) {
       if (e instanceof QueryFailedError) {
@@ -140,6 +164,24 @@ export class AppointmentsService {
     if (!appointment.slotId) {
       return new HttpException('Invalid slot id', HttpStatus.BAD_REQUEST);
     }
+    const business = await this.businessService.findOne(appointment.bId);
+    const bOwner = await this.userService.findOne(business.uId);
+    const customer = await this.userService.findOne(appointment.uId);
+
+    const staff = await this.staff.findOne(appointment.staffId);
+    const ctx: EmailCtx = {
+      staffName: staff.firstName,
+      businessName: business.bName,
+      appNumber: appointment.appId,
+      dateTime: appointment.startDateTime,
+      customerName: customer.firstName,
+    };
+    this.mailService
+      .sendCustomerAppointmentCancellation(customer.emailId, ctx)
+      .then(console.log);
+    this.mailService
+      .sendBusinessAppointmentCancellation(bOwner.emailId, ctx)
+      .then(console.log);
     const slotId = appointment.slotId;
     await this.appointmentRepository.delete({ slotId: appointment.slotId });
     await this.slotRepository.delete(slotId);

@@ -19,6 +19,7 @@ import { MailModule } from '../mail/mail.module';
     StaffsModule,
     BusinessServicesModule,
     forwardRef(() => UsersModule),
+    forwardRef(() => BusinessModule),
     MailModule,
   ],
 
