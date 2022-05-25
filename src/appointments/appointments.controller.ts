@@ -34,10 +34,11 @@ export class AppointmentsController {
   // }
 
   @Get('available')
-  getAvailableAppointments(
-    @Query('bId') bId,
+  async getAvailableAppointments(
+    @Query('bId') bId: number,
     @Query('startDate') startDate = new Date(),
     @Query('endDate') endDate = null,
+    @Query('staffId') staffId = null,
   ) {
     if (!endDate) {
       endDate = new Date();
@@ -47,11 +48,23 @@ export class AppointmentsController {
       throw new HttpException('Invalid Bid', HttpStatus.BAD_REQUEST);
     }
 
-    return this.appointmentsService.getAvailableAppointments(
+    const slots = await this.appointmentsService.getAvailableAppointments(
       bId,
       startDate,
       endDate,
     );
+    if (staffId == null) {
+      return slots;
+    }
+    const l = slots.length;
+    const res_slots = [];
+    for (let i = 0; i < l; i++) {
+      const slot = slots[i];
+      if (slot.availableStaff.find((val) => val == staffId)) {
+        res_slots.push(slot);
+      }
+    }
+    return res_slots;
   }
 
   @Get(':id')
