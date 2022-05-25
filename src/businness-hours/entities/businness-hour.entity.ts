@@ -25,12 +25,12 @@ export class BusinnessHour {
   day: number;
 
   //TODO change to date time
-  @Column({ type: 'time', nullable: false })
+  @Column({ type: 'time', nullable: true,default:'01:00:00' })
   startTime: string;
 
-  @Column({ type: 'time', nullable: false })
+  @Column({ type: 'time', nullable: true ,default:'01:00:00'})
   endTime: string;
 
-  @Column({ type: 'boolean', default: false })
+  @Column({ type: 'boolean', default: true })
   isWorking: boolean;
 }

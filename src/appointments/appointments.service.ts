@@ -217,7 +217,7 @@ export class AppointmentsService {
 
     const day = startDate.getDay();
     const bHour = bHours.find((obj) => obj.day == day);
-    if (bHour == undefined) {
+    if (bHour == undefined || bHour.isWorking == false) {
       return [];
     }
     const startTime = bHour.startTime;
